@@ -1,48 +1,4 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Detroit Axle Part Lookup</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon links -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#e31937">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="msapplication-TileColor" content="#e31937">
-    <meta name="theme-color" content="#e31937">
-    
-    <style>
-        :root {
-            --primary: #e31937;
-            --primary-dark: #c0102a;
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #f0f0f0;
-            --text-muted: #aaaaaa;
-            --border: #333333;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Rest of your existing CSS remains the same */
-        /* ... */
-
-
-        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -183,6 +139,11 @@
             font-size: 13px;
         }
         
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            margin-right: 5px;
+        }
+        
         .summary {
             background-color: var(--card-bg-light);
             padding: 12px;
@@ -238,6 +199,15 @@
             font-size: 12px;
             color: var(--text-muted);
         }
+        
+        .checkbox-cell {
+            width: 20px;
+            padding-right: 0;
+        }
+        
+        .selected-row {
+            background-color: rgba(227, 25, 55, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -286,7 +256,9 @@
         </div>
         
         <div class="action-buttons">
-            <button onclick="openAllPartPages()">Open Part Pages</button>
+            <button onclick="openSelectedPartPages()">Open Selected Parts</button>
+            <button onclick="selectAllParts()">Select All</button>
+            <button onclick="deselectAllParts()">Deselect All</button>
             <button onclick="clearAll()" class="secondary-button">Clear All</button>
         </div>
     </div>
@@ -312,8 +284,8 @@
                         description: parts.slice(1, -1).join(' '),
                         partNumber: parts[parts.length - 1],
                         unitPrice: 0,
-                        returnQuantity: quantity, // Default to full quantity
-                        lineValue: 0
+                        returnQuantity: quantity,
+                        selected: true  // Default to selected/checked
                     });
                 }
             }
@@ -334,6 +306,7 @@
                 <table>
                     <thead>
                         <tr>
+                            <th class="checkbox-cell"></th>
                             <th>Qty</th>
                             <th>Description</th>
                             <th>Part #</th>
@@ -346,9 +319,12 @@
             `;
             
             partsData.forEach((part, index) => {
-                const lineValue = part.unitPrice * part.returnQuantity;
+                const lineValue = part.unitPrice * (part.selected ? part.returnQuantity : 0);
+                const rowClass = part.selected ? 'selected-row' : '';
+                
                 html += `
-                    <tr>
+                    <tr class="${rowClass}">
+                        <td class="checkbox-cell"><input type="checkbox" id="check-${index}" ${part.selected ? 'checked' : ''} onchange="togglePartSelection(${index}, this.checked)"></td>
                         <td>${part.quantity}</td>
                         <td style="min-width: 200px;">${part.description}</td>
                         <td><a href="https://www.detroitaxle.com/${part.partNumber}" class="part-link" target="_blank">${part.partNumber}</a></td>
@@ -363,34 +339,59 @@
             container.innerHTML = html;
         }
         
+        function togglePartSelection(index, isSelected) {
+            partsData[index].selected = isSelected;
+            const row = document.querySelector(`#check-${index}`).closest('tr');
+            if (isSelected) {
+                row.classList.add('selected-row');
+            } else {
+                row.classList.remove('selected-row');
+            }
+            updateSummary();
+        }
+        
+        function selectAllParts() {
+            partsData.forEach((part, index) => {
+                part.selected = true;
+                const checkbox = document.querySelector(`#check-${index}`);
+                if (checkbox) checkbox.checked = true;
+                const row = checkbox.closest('tr');
+                row.classList.add('selected-row');
+            });
+            updateSummary();
+        }
+        
+        function deselectAllParts() {
+            partsData.forEach((part, index) => {
+                part.selected = false;
+                const checkbox = document.querySelector(`#check-${index}`);
+                if (checkbox) checkbox.checked = false;
+                const row = checkbox.closest('tr');
+                row.classList.remove('selected-row');
+            });
+            updateSummary();
+        }
+        
         function updateUnitPrice(index, value) {
-            const unitPrice = parseFloat(value) || 0;
-            partsData[index].unitPrice = unitPrice;
-            updateLineValue(index);
+            partsData[index].unitPrice = parseFloat(value) || 0;
             updateSummary();
         }
         
         function updateReturnQuantity(index, value) {
             const max = partsData[index].quantity;
-            const returnQty = Math.min(parseInt(value) || 0, max);
-            partsData[index].returnQuantity = returnQty;
-            document.getElementById(`return-${index}`).value = returnQty;
-            updateLineValue(index);
+            partsData[index].returnQuantity = Math.min(parseInt(value) || 0, max);
+            document.getElementById(`return-${index}`).value = partsData[index].returnQuantity;
             updateSummary();
-        }
-        
-        function updateLineValue(index) {
-            const part = partsData[index];
-            part.lineValue = part.unitPrice * part.returnQuantity;
-            document.querySelectorAll(`#lineValue-${index}`).forEach(el => {
-                el.textContent = `$${part.lineValue.toFixed(2)}`;
-            });
         }
         
         function updateSummary() {
             const kitPrice = parseFloat(document.getElementById('kitPrice').value) || 0;
-            const selectedValue = partsData.reduce((sum, part) => sum + (part.unitPrice * part.returnQuantity), 0);
-            const keptValue = partsData.reduce((sum, part) => sum + (part.unitPrice * (part.quantity - part.returnQuantity)), 0);
+            const selectedValue = partsData.reduce((sum, part) => {
+                return sum + (part.selected ? part.unitPrice * part.returnQuantity : 0);
+            }, 0);
+            const keptValue = partsData.reduce((sum, part) => {
+                return sum + (part.selected ? 0 : part.unitPrice * part.quantity);
+            }, 0);
             
             document.getElementById('totalKitPrice').textContent = kitPrice.toFixed(2);
             document.getElementById('selectedPartsValue').textContent = selectedValue.toFixed(2);
@@ -398,9 +399,9 @@
             document.getElementById('refundAmount').textContent = (kitPrice - selectedValue).toFixed(2);
         }
         
-        function openAllPartPages() {
+        function openSelectedPartPages() {
             partsData.forEach(part => {
-                if (part.returnQuantity > 0) {
+                if (part.selected && part.returnQuantity > 0) {
                     const url = `https://www.detroitaxle.com/${part.partNumber}`;
                     // Open the tab N times based on return quantity
                     for (let i = 0; i < part.returnQuantity; i++) {
