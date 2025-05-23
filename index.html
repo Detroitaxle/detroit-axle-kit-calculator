@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detroit Axle Kit Calculator</title>
+    <style>
+        :root {
+            --primary: #e31937;
+            --primary-dark: #c0102a;
+            --bg: #f5f5f5;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-muted: #666666;
+            --border: #dddddd;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --error: #f44336;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .summary {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .secondary-button {
+            background-color: var(--text-muted);
+        }
+        
+        .secondary-button:hover {
+            background-color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">DETROIT AXLE KIT CALCULATOR</div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h2>1. Paste Kit Components</h2>
+            <textarea id="kitComponents" placeholder="Paste your kit components here exactly as shown in the example:
+            
+2	Front Driver or Passenger Side Strut w/Coil Spring	171140
+1	Rack and Pinion Tie Rod Boots (Pair)	BT-637x2
+1	Front Passenger Side Outer Tie Rod	ES800514"></textarea>
+            
+            <button onclick="parseKitComponents()">Process Components</button>
+        </div>
+        
+        <div class="card">
+            <h2>2. Kit Information</h2>
+            <div>
+                <label for="kitPrice">Kit Price: $</label>
+                <input type="number" id="kitPrice" min="0" step="0.01" value="0.00">
+            </div>
+            
+            <div id="partsTableContainer" style="margin-top: 20px;"></div>
+            
+            <div class="summary">
+                <h3>Refund Summary</h3>
+                <div>Total Kit Price: $<span id="totalKitPrice">0.00</span></div>
+                <div>Selected Parts Value: $<span id="selectedPartsValue">0.00</span></div>
+                <div class="total">Refund Amount: $<span id="refundAmount">0.00</span></div>
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="openAllPartPages()">Open Part Pages</button>
+                <button onclick="clearAll()" class="secondary-button">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let partsData = [];
+        
+        function parseKitComponents() {
+            const textarea = document.getElementById('kitComponents');
+            const lines = textarea.value.split('\n');
+            partsData = [];
+            
+            for (const line of lines) {
+                if (line.trim() === '') continue;
+                
+                // Split on tabs or multiple spaces
+                const parts = line.split(/\t|\s\s+/).filter(p => p.trim() !== '');
+                
+                if (parts.length >= 3) {
+                    partsData.push({
+                        quantity: parseInt(parts[0]),
+                        description: parts.slice(1, -1).join(' '),
+                        partNumber: parts[parts.length - 1],
+                        unitPrice: 0,
+                        returnQuantity: 0
+                    });
+                }
+            }
+            
+            renderPartsTable();
+        }
+        
+        function renderPartsTable() {
+            const container = document.getElementById('partsTableContainer');
+            
+            if (partsData.length === 0) {
+                container.innerHTML = '<p>No parts found. Please paste your kit components in the correct format.</p>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Qty</th>
+                            <th>Description</th>
+                            <th>Part #</th>
+                            <th>Unit Price</th>
+                            <th>Return Qty</th>
+                            <th>Line Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            partsData.forEach((part, index) => {
+                html += `
+                    <tr>
+                        <td>${part.quantity}</td>
+                        <td>${part.description}</td>
+                        <td><a href="https://www.detroitaxle.com/${part.partNumber}" target="_blank">${part.partNumber}</a></td>
+                        <td><input type="number" id="price-${index}" value="${part.unitPrice.toFixed(2)}" min="0" step="0.01" onchange="updateUnitPrice(${index}, this.value)"></td>
+                        <td><input type="number" id="return-${index}" value="${part.returnQuantity}" min="0" max="${part.quantity}" onchange="updateReturnQuantity(${index}, this.value)"></td>
+                        <td id="lineValue-${index}">$${(part.unitPrice * part.returnQuantity).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+            updateSummary();
+        }
+        
+        function updateUnitPrice(index, value) {
+            partsData[index].unitPrice = parseFloat(value) || 0;
+            updateLineValue(index);
+            updateSummary();
+        }
+        
+        function updateReturnQuantity(index, value) {
+            const max = partsData[index].quantity;
+            partsData[index].returnQuantity = Math.min(parseInt(value) || 0, max);
+            document.getElementById(`return-${index}`).value = partsData[index].returnQuantity;
+            updateLineValue(index);
+            updateSummary();
+        }
+        
+        function updateLineValue(index) {
+            const part = partsData[index];
+            const value = part.unitPrice * part.returnQuantity;
+            document.getElementById(`lineValue-${index}`).textContent = `$${value.toFixed(2)}`;
+        }
+        
+        function updateSummary() {
+            const kitPrice = parseFloat(document.getElementById('kitPrice').value) || 0;
+            const selectedValue = partsData.reduce((sum, part) => sum + (part.unitPrice * part.returnQuantity), 0);
+            
+            document.getElementById('totalKitPrice').textContent = kitPrice.toFixed(2);
+            document.getElementById('selectedPartsValue').textContent = selectedValue.toFixed(2);
+            document.getElementById('refundAmount').textContent = (kitPrice - selectedValue).toFixed(2);
+        }
+        
+        function openAllPartPages() {
+            partsData.forEach(part => {
+                if (part.returnQuantity > 0) {
+                    const url = `https://www.detroitaxle.com/${part.partNumber}`;
+                    // Open the tab N times based on return quantity
+                    for (let i = 0; i < part.returnQuantity; i++) {
+                        window.open(url, '_blank');
+                    }
+                }
+            });
+        }
+        
+        function clearAll() {
+            document.getElementById('kitComponents').value = '';
+            document.getElementById('kitPrice').value = '0.00';
+            partsData = [];
+            renderPartsTable();
+            updateSummary();
+        }
+        
+        // Initialize with example data if needed
+        // document.getElementById('kitComponents').value = `2\tFront Driver or Passenger Side Strut w/Coil Spring\t171140\n1\tRack and Pinion Tie Rod Boots (Pair)\tBT-637x2`;
+    </script>
+</body>
+</html>
