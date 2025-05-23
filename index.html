@@ -41,8 +41,8 @@
         /* Rest of your existing CSS remains the same */
         /* ... */
 
-        
-<!DOCTYPE html>
+
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -71,55 +71,56 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
+            line-height: 1.4;
         }
         
         .header {
             background-color: var(--primary);
             color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             text-align: center;
         }
         
         .logo {
             font-weight: bold;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
         }
         
         .input-section {
             background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
         }
         
         .calculator-section {
             background-color: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
         }
         
-        h1, h2, h3 {
+        h2 {
             color: var(--primary);
             margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
         }
         
         textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 12px;
+            min-height: 100px;
+            padding: 10px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 4px;
             font-family: inherit;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background-color: var(--card-bg-light);
             color: var(--text);
-            font-size: 14px;
+            font-size: 13px;
             resize: vertical;
         }
         
@@ -127,21 +128,15 @@
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
+            padding: 8px 15px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
+            font-size: 14px;
             transition: all 0.2s;
-            font-size: 16px;
         }
         
         button:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-        
-        button:active {
-            transform: translateY(0);
         }
         
         .secondary-button {
@@ -156,23 +151,22 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background-color: var(--card-bg-light);
+            font-size: 13px;
         }
         
         th, td {
-            padding: 14px 16px;
+            padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
         
         th {
             background-color: var(--primary);
             color: white;
             font-weight: bold;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
         }
         
         tr:hover {
@@ -180,55 +174,69 @@
         }
         
         input[type="number"] {
-            width: 80px;
-            padding: 8px 10px;
+            width: 60px;
+            padding: 5px;
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 3px;
             background-color: var(--card-bg);
             color: var(--text);
-            font-size: 14px;
-        }
-        
-        input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(227, 25, 55, 0.2);
+            font-size: 13px;
         }
         
         .summary {
             background-color: var(--card-bg-light);
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 30px;
-            border-left: 4px solid var(--primary);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            font-size: 13px;
+        }
+        
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .summary-label {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        
+        .summary-value {
+            font-weight: bold;
         }
         
         .total {
-            font-size: 1.3rem;
-            font-weight: bold;
             color: var(--primary);
-            margin-top: 10px;
+            font-weight: bold;
         }
         
         .action-buttons {
             display: flex;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         .part-link {
             color: var(--primary-light);
             text-decoration: none;
-            transition: color 0.2s;
         }
         
         .part-link:hover {
-            color: var(--primary);
             text-decoration: underline;
         }
         
-        .highlight {
-            background-color: rgba(227, 25, 55, 0.1);
+        .compact-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .compact-input label {
+            font-size: 12px;
+            color: var(--text-muted);
         }
     </style>
 </head>
@@ -249,33 +257,31 @@
     </div>
     
     <div class="calculator-section">
-        <h2>2. Kit Calculation</h2>
-        <div style="margin-bottom: 20px;">
-            <label for="kitPrice" style="font-weight: bold; margin-right: 10px;">Kit Price:</label>
-            <input type="number" id="kitPrice" min="0" step="0.01" value="0.00" style="width: 120px; padding: 10px;">
+        <div class="compact-input" style="margin-bottom: 10px;">
+            <label for="kitPrice">Kit Price:</label>
+            <input type="number" id="kitPrice" min="0" step="0.01" value="0.00">
         </div>
         
-        <div id="partsTableContainer"></div>
+        <div id="partsTableContainer">
+            <p style="color: var(--text-muted); text-align: center; font-size: 13px;">Paste your kit components above to begin</p>
+        </div>
         
         <div class="summary">
-            <h3>Refund Summary</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div>
-                    <div style="color: var(--text-muted);">Total Kit Price:</div>
-                    <div style="font-size: 1.2rem;">$<span id="totalKitPrice">0.00</span></div>
-                </div>
-                <div>
-                    <div style="color: var(--text-muted);">Selected Parts Value:</div>
-                    <div style="font-size: 1.2rem;">$<span id="selectedPartsValue">0.00</span></div>
-                </div>
-                <div>
-                    <div style="color: var(--text-muted);">Parts Being Kept:</div>
-                    <div style="font-size: 1.2rem;">$<span id="keptPartsValue">0.00</span></div>
-                </div>
-                <div>
-                    <div style="color: var(--text-muted);">Refund Amount:</div>
-                    <div class="total">$<span id="refundAmount">0.00</span></div>
-                </div>
+            <div class="summary-item">
+                <span class="summary-label">Total Kit Price</span>
+                <span class="summary-value">$<span id="totalKitPrice">0.00</span></span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Selected Parts Value</span>
+                <span class="summary-value">$<span id="selectedPartsValue">0.00</span></span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Parts Being Kept</span>
+                <span class="summary-value">$<span id="keptPartsValue">0.00</span></span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Refund Amount</span>
+                <span class="summary-value total">$<span id="refundAmount">0.00</span></span>
             </div>
         </div>
         
@@ -320,7 +326,7 @@
             const container = document.getElementById('partsTableContainer');
             
             if (partsData.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No parts found. Please paste your kit components in the correct format.</p>';
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-size: 13px;">No parts found. Please paste your kit components in the correct format.</p>';
                 return;
             }
             
@@ -331,9 +337,9 @@
                             <th>Qty</th>
                             <th>Description</th>
                             <th>Part #</th>
-                            <th>Unit Price</th>
-                            <th>Return Qty</th>
-                            <th>Line Value</th>
+                            <th>Unit $</th>
+                            <th>Return</th>
+                            <th>Value</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -344,11 +350,11 @@
                 html += `
                     <tr>
                         <td>${part.quantity}</td>
-                        <td>${part.description}</td>
+                        <td style="min-width: 200px;">${part.description}</td>
                         <td><a href="https://www.detroitaxle.com/${part.partNumber}" class="part-link" target="_blank">${part.partNumber}</a></td>
                         <td><input type="number" id="price-${index}" value="${part.unitPrice.toFixed(2)}" min="0" step="0.01" onchange="updateUnitPrice(${index}, this.value)"></td>
                         <td><input type="number" id="return-${index}" value="${part.returnQuantity}" min="0" max="${part.quantity}" onchange="updateReturnQuantity(${index}, this.value)"></td>
-                        <td id="lineValue-${index}" class="${lineValue > 0 ? 'highlight' : ''}">$${lineValue.toFixed(2)}</td>
+                        <td>$${lineValue.toFixed(2)}</td>
                     </tr>
                 `;
             });
@@ -376,14 +382,9 @@
         function updateLineValue(index) {
             const part = partsData[index];
             part.lineValue = part.unitPrice * part.returnQuantity;
-            const lineValueElement = document.getElementById(`lineValue-${index}`);
-            lineValueElement.textContent = `$${part.lineValue.toFixed(2)}`;
-            
-            if (part.lineValue > 0) {
-                lineValueElement.classList.add('highlight');
-            } else {
-                lineValueElement.classList.remove('highlight');
-            }
+            document.querySelectorAll(`#lineValue-${index}`).forEach(el => {
+                el.textContent = `$${part.lineValue.toFixed(2)}`;
+            });
         }
         
         function updateSummary() {
