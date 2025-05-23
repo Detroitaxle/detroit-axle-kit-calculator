@@ -256,22 +256,10 @@
             componentsInput.addEventListener('input', processComponents);
             kitPriceInput.addEventListener('input', updateSummary);
             
-            // Clear input when focused (only if it's the default 0 value)
-            document.addEventListener('focus', function(e) {
-                if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
-                    if (e.target.value === '0' && !e.target.dataset.hasBeenEdited) {
-                        e.target.value = '';
-                    }
-                }
-            }, true);
-            
             // Mark inputs as edited when changed
             document.addEventListener('input', function(e) {
-                if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
-                    e.target.dataset.hasBeenEdited = 'true';
-                }
-                
                 if (e.target.classList.contains('price-input') || e.target.classList.contains('return-qty')) {
+                    e.target.dataset.hasBeenEdited = 'true';
                     updateRefundAmount(e.target);
                     updateSummary();
                 }
@@ -304,7 +292,7 @@
                             partNumber: partNumber,
                             unitPrice: 0,
                             totalPrice: 0,
-                            returnQty: qty,
+                            returnQty: 0, // Initialize return quantity to 0
                             refundAmount: 0
                         });
                     }
@@ -371,6 +359,7 @@
                     returnInput.value = component.returnQty;
                     returnInput.classList.add('return-qty');
                     returnInput.dataset.index = index;
+                    returnInput.placeholder = '0';
                     returnCell.appendChild(returnInput);
                     row.appendChild(returnCell);
                     returnQtyInputs[index] = returnInput;
@@ -403,8 +392,8 @@
                     input.value = component.returnQty;
                 }
                 
-                // Calculate refund amount with discount applied
-                if (component.unitPrice > 0) {
+                // Only calculate refund if return quantity is greater than 0
+                if (component.returnQty > 0 && component.unitPrice > 0) {
                     const totalIndividualPrice = componentsData.reduce((sum, comp) => sum + (comp.unitPrice * comp.qty), 0);
                     const kitPrice = parseFloat(kitPriceInput.value) || 0;
                     
@@ -465,7 +454,7 @@
                 }
                 
                 for (const index in returnQtyInputs) {
-                    returnQtyInputs[index].value = componentsData[index]?.qty || '';
+                    returnQtyInputs[index].value = '0';
                     returnQtyInputs[index].dataset.hasBeenEdited = 'false';
                 }
             }
