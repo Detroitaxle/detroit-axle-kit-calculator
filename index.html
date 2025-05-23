@@ -57,8 +57,15 @@
             font-family: monospace;
         }
         
-        .kit-price-input {
+        .kit-price-section {
             margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .kit-price-input {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -75,6 +82,21 @@
             padding: 8px;
             border-radius: 5px;
             width: 100px;
+        }
+        
+        .calculate-btn {
+            background-color: var(--orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+        
+        .calculate-btn:hover {
+            opacity: 0.9;
         }
         
         .results {
@@ -186,9 +208,12 @@
             <h3>Paste Kit Components List:</h3>
             <textarea id="componentsInput" placeholder="Paste the kit components list here..."></textarea>
             
-            <div class="kit-price-input">
-                <label for="kitPrice">Kit Price: $</label>
-                <input type="number" id="kitPrice" min="0" step="0.01" placeholder="0.00">
+            <div class="kit-price-section">
+                <div class="kit-price-input">
+                    <label for="kitPrice">Kit Price: $</label>
+                    <input type="number" id="kitPrice" min="0" step="0.01" placeholder="0.00">
+                </div>
+                <button class="calculate-btn" id="calculateBtn">Calculate</button>
             </div>
         </div>
         
@@ -240,6 +265,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const componentsInput = document.getElementById('componentsInput');
             const kitPriceInput = document.getElementById('kitPrice');
+            const calculateBtn = document.getElementById('calculateBtn');
             const resultsDiv = document.getElementById('results');
             const componentsTableBody = document.getElementById('componentsTableBody');
             const sumIndividualPrices = document.getElementById('sumIndividualPrices');
@@ -254,14 +280,21 @@
             
             // Process input when pasted
             componentsInput.addEventListener('input', processComponents);
-            kitPriceInput.addEventListener('input', updateSummary);
+            
+            // Calculate button click handler
+            calculateBtn.addEventListener('click', function() {
+                // Update all input values from the form
+                updateAllInputValues();
+                // Recalculate all refund amounts
+                recalculateAllRefunds();
+                // Update the summary
+                updateSummary();
+            });
             
             // Mark inputs as edited when changed
             document.addEventListener('input', function(e) {
                 if (e.target.classList.contains('price-input') || e.target.classList.contains('return-qty')) {
                     e.target.dataset.hasBeenEdited = 'true';
-                    updateRefundAmount(e.target);
-                    updateSummary();
                 }
             }, true);
             
@@ -292,14 +325,13 @@
                             partNumber: partNumber,
                             unitPrice: 0,
                             totalPrice: 0,
-                            returnQty: 0, // Initialize return quantity to 0
+                            returnQty: 0,
                             refundAmount: 0
                         });
                     }
                 });
                 
                 renderComponentsTable();
-                updateSummary();
                 resultsDiv.style.display = 'block';
             }
             
@@ -374,47 +406,58 @@
                 });
             }
             
-            function updateRefundAmount(input) {
-                const index = input.dataset.index;
-                const component = componentsData[index];
-                
-                if (input.classList.contains('price-input')) {
-                    component.unitPrice = parseFloat(input.value) || 0;
-                    component.totalPrice = component.unitPrice * component.qty;
+            function updateAllInputValues() {
+                // Update all unit prices from inputs
+                for (const index in priceInputs) {
+                    const input = priceInputs[index];
+                    componentsData[index].unitPrice = parseFloat(input.value) || 0;
+                    componentsData[index].totalPrice = componentsData[index].unitPrice * componentsData[index].qty;
                     
                     // Update total price cell
                     const totalCell = document.querySelector(`td[data-index="${index}"]:nth-child(5)`);
                     if (totalCell) {
-                        totalCell.textContent = '$' + component.totalPrice.toFixed(2);
+                        totalCell.textContent = '$' + componentsData[index].totalPrice.toFixed(2);
                     }
-                } else if (input.classList.contains('return-qty')) {
-                    component.returnQty = Math.min(component.qty, Math.max(0, parseInt(input.value) || 0));
-                    input.value = component.returnQty;
                 }
                 
-                // Only calculate refund if return quantity is greater than 0
-                if (component.returnQty > 0 && component.unitPrice > 0) {
-                    const totalIndividualPrice = componentsData.reduce((sum, comp) => sum + (comp.unitPrice * comp.qty), 0);
-                    const kitPrice = parseFloat(kitPriceInput.value) || 0;
-                    
-                    // Calculate discount rate if kit price is set and valid
-                    let discountRate = 0;
-                    if (kitPrice > 0 && totalIndividualPrice > 0 && kitPrice < totalIndividualPrice) {
-                        discountRate = (totalIndividualPrice - kitPrice) / totalIndividualPrice;
-                    }
-                    
-                    // Calculate discounted unit price
-                    const discountedUnitPrice = component.unitPrice * (1 - discountRate);
-                    component.refundAmount = discountedUnitPrice * component.returnQty;
-                } else {
-                    component.refundAmount = 0;
+                // Update all return quantities from inputs
+                for (const index in returnQtyInputs) {
+                    const input = returnQtyInputs[index];
+                    componentsData[index].returnQty = Math.min(
+                        componentsData[index].qty, 
+                        Math.max(0, parseInt(input.value) || 0)
+                    );
+                    input.value = componentsData[index].returnQty;
+                }
+            }
+            
+            function recalculateAllRefunds() {
+                const totalIndividualPrice = componentsData.reduce((sum, comp) => sum + (comp.unitPrice * comp.qty), 0);
+                const kitPrice = parseFloat(kitPriceInput.value) || 0;
+                
+                // Calculate discount rate if kit price is set and valid
+                let discountRate = 0;
+                if (kitPrice > 0 && totalIndividualPrice > 0 && kitPrice < totalIndividualPrice) {
+                    discountRate = (totalIndividualPrice - kitPrice) / totalIndividualPrice;
                 }
                 
-                // Update refund amount cell
-                const refundCell = document.querySelector(`td[data-index="${index}"]:nth-child(7)`);
-                if (refundCell) {
-                    refundCell.textContent = '$' + component.refundAmount.toFixed(2);
-                }
+                // Recalculate all refund amounts
+                componentsData.forEach((component, index) => {
+                    // Only calculate refund if return quantity is greater than 0
+                    if (component.returnQty > 0 && component.unitPrice > 0) {
+                        // Calculate discounted unit price
+                        const discountedUnitPrice = component.unitPrice * (1 - discountRate);
+                        component.refundAmount = discountedUnitPrice * component.returnQty;
+                    } else {
+                        component.refundAmount = 0;
+                    }
+                    
+                    // Update refund amount cell
+                    const refundCell = document.querySelector(`td[data-index="${index}"]:nth-child(7)`);
+                    if (refundCell) {
+                        refundCell.textContent = '$' + component.refundAmount.toFixed(2);
+                    }
+                });
             }
             
             function updateSummary() {
