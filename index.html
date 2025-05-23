@@ -400,11 +400,20 @@
                     input.value = component.returnQty;
                 }
                 
-                // Calculate refund amount
+                // Calculate refund amount with discount applied
                 if (component.unitPrice > 0) {
-                    const discountRate = getDiscountRate();
-                    const discountedPrice = component.unitPrice * (1 - discountRate);
-                    component.refundAmount = discountedPrice * component.returnQty;
+                    const totalIndividualPrice = componentsData.reduce((sum, comp) => sum + (comp.unitPrice * comp.qty), 0);
+                    const kitPrice = parseFloat(kitPriceInput.value) || 0;
+                    
+                    // Calculate discount rate if kit price is set and valid
+                    let discountRate = 0;
+                    if (kitPrice > 0 && totalIndividualPrice > 0 && kitPrice < totalIndividualPrice) {
+                        discountRate = (totalIndividualPrice - kitPrice) / totalIndividualPrice;
+                    }
+                    
+                    // Calculate discounted unit price
+                    const discountedUnitPrice = component.unitPrice * (1 - discountRate);
+                    component.refundAmount = discountedUnitPrice * component.returnQty;
                 } else {
                     component.refundAmount = 0;
                 }
@@ -416,32 +425,25 @@
                 }
             }
             
-            function getDiscountRate() {
-                const kitPrice = parseFloat(kitPriceInput.value) || 0;
-                const sumPrices = componentsData.reduce((sum, component) => {
-                    return sum + (component.unitPrice * component.qty);
-                }, 0);
-                
-                if (sumPrices > 0) {
-                    return 1 - (kitPrice / sumPrices);
-                }
-                return 0;
-            }
-            
             function updateSummary() {
-                const sumPrices = componentsData.reduce((sum, component) => {
+                const totalIndividualPrice = componentsData.reduce((sum, component) => {
                     return sum + (component.unitPrice * component.qty);
                 }, 0);
                 
                 const kitPrice = parseFloat(kitPriceInput.value) || 0;
-                const discountAmount = Math.max(0, sumPrices - kitPrice);
-                const discountRate = sumPrices > 0 ? (discountAmount / sumPrices) * 100 : 0;
+                let discountAmount = 0;
+                let discountRate = 0;
+                
+                if (kitPrice > 0 && totalIndividualPrice > 0) {
+                    discountAmount = Math.max(0, totalIndividualPrice - kitPrice);
+                    discountRate = (discountAmount / totalIndividualPrice) * 100;
+                }
                 
                 const totalRefundAmount = componentsData.reduce((sum, component) => {
                     return sum + component.refundAmount;
                 }, 0);
                 
-                sumIndividualPrices.textContent = '$' + sumPrices.toFixed(2);
+                sumIndividualPrices.textContent = '$' + totalIndividualPrice.toFixed(2);
                 displayKitPrice.textContent = '$' + kitPrice.toFixed(2);
                 discountInfo.textContent = `$${discountAmount.toFixed(2)} (${discountRate.toFixed(2)}%)`;
                 totalRefund.textContent = '$' + totalRefundAmount.toFixed(2);
