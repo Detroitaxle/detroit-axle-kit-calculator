@@ -41,6 +41,7 @@
         /* Rest of your existing CSS remains the same */
         /* ... */
 
+        
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,11 +52,13 @@
         :root {
             --primary: #e31937;
             --primary-dark: #c0102a;
-            --bg: #f5f5f5;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --text-muted: #666666;
-            --border: #dddddd;
+            --primary-light: #ff5a5a;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --card-bg-light: #2a2a2a;
+            --text: #f0f0f0;
+            --text-muted: #aaaaaa;
+            --border: #333333;
             --success: #4caf50;
             --warning: #ff9800;
             --error: #f44336;
@@ -77,27 +80,28 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
         }
         
         .logo {
             font-weight: bold;
             font-size: 1.5rem;
+            letter-spacing: 1px;
         }
         
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .card {
+        .input-section {
             background-color: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        
+        .calculator-section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         
         h1, h2, h3 {
@@ -107,37 +111,57 @@
         
         textarea {
             width: 100%;
-            min-height: 200px;
-            padding: 10px;
+            min-height: 150px;
+            padding: 12px;
             border: 1px solid var(--border);
-            border-radius: 4px;
+            border-radius: 6px;
             font-family: inherit;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            background-color: var(--card-bg-light);
+            color: var(--text);
+            font-size: 14px;
+            resize: vertical;
         }
         
         button {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
+            padding: 12px 20px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            font-size: 16px;
         }
         
         button:hover {
             background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .secondary-button {
+            background-color: var(--card-bg-light);
+            color: var(--text);
+        }
+        
+        .secondary-button:hover {
+            background-color: var(--border);
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            background-color: var(--card-bg-light);
         }
         
         th, td {
-            padding: 12px 15px;
+            padding: 14px 16px;
             text-align: left;
             border-bottom: 1px solid var(--border);
         }
@@ -145,44 +169,66 @@
         th {
             background-color: var(--primary);
             color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
         }
         
         tr:hover {
-            background-color: rgba(0,0,0,0.02);
+            background-color: rgba(255,255,255,0.03);
         }
         
         input[type="number"] {
             width: 80px;
-            padding: 8px;
+            padding: 8px 10px;
             border: 1px solid var(--border);
             border-radius: 4px;
+            background-color: var(--card-bg);
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(227, 25, 55, 0.2);
         }
         
         .summary {
-            background-color: #f9f9f9;
-            padding: 15px;
+            background-color: var(--card-bg-light);
+            padding: 20px;
             border-radius: 8px;
-            margin-top: 20px;
+            margin-top: 30px;
+            border-left: 4px solid var(--primary);
         }
         
         .total {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--primary);
+            margin-top: 10px;
         }
         
         .action-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 25px;
         }
         
-        .secondary-button {
-            background-color: var(--text-muted);
+        .part-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.2s;
         }
         
-        .secondary-button:hover {
-            background-color: var(--text);
+        .part-link:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        
+        .highlight {
+            background-color: rgba(227, 25, 55, 0.1);
         }
     </style>
 </head>
@@ -191,38 +237,51 @@
         <div class="logo">DETROIT AXLE KIT CALCULATOR</div>
     </div>
     
-    <div class="container">
-        <div class="card">
-            <h2>1. Paste Kit Components</h2>
-            <textarea id="kitComponents" placeholder="Paste your kit components here exactly as shown in the example:
-            
+    <div class="input-section">
+        <h2>1. Paste Kit Components</h2>
+        <textarea id="kitComponents" placeholder="Paste your kit components here exactly as shown in the example:
+
 2	Front Driver or Passenger Side Strut w/Coil Spring	171140
 1	Rack and Pinion Tie Rod Boots (Pair)	BT-637x2
 1	Front Passenger Side Outer Tie Rod	ES800514"></textarea>
-            
-            <button onclick="parseKitComponents()">Process Components</button>
+        
+        <button onclick="parseKitComponents()">Process Components</button>
+    </div>
+    
+    <div class="calculator-section">
+        <h2>2. Kit Calculation</h2>
+        <div style="margin-bottom: 20px;">
+            <label for="kitPrice" style="font-weight: bold; margin-right: 10px;">Kit Price:</label>
+            <input type="number" id="kitPrice" min="0" step="0.01" value="0.00" style="width: 120px; padding: 10px;">
         </div>
         
-        <div class="card">
-            <h2>2. Kit Information</h2>
-            <div>
-                <label for="kitPrice">Kit Price: $</label>
-                <input type="number" id="kitPrice" min="0" step="0.01" value="0.00">
+        <div id="partsTableContainer"></div>
+        
+        <div class="summary">
+            <h3>Refund Summary</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <div style="color: var(--text-muted);">Total Kit Price:</div>
+                    <div style="font-size: 1.2rem;">$<span id="totalKitPrice">0.00</span></div>
+                </div>
+                <div>
+                    <div style="color: var(--text-muted);">Selected Parts Value:</div>
+                    <div style="font-size: 1.2rem;">$<span id="selectedPartsValue">0.00</span></div>
+                </div>
+                <div>
+                    <div style="color: var(--text-muted);">Parts Being Kept:</div>
+                    <div style="font-size: 1.2rem;">$<span id="keptPartsValue">0.00</span></div>
+                </div>
+                <div>
+                    <div style="color: var(--text-muted);">Refund Amount:</div>
+                    <div class="total">$<span id="refundAmount">0.00</span></div>
+                </div>
             </div>
-            
-            <div id="partsTableContainer" style="margin-top: 20px;"></div>
-            
-            <div class="summary">
-                <h3>Refund Summary</h3>
-                <div>Total Kit Price: $<span id="totalKitPrice">0.00</span></div>
-                <div>Selected Parts Value: $<span id="selectedPartsValue">0.00</span></div>
-                <div class="total">Refund Amount: $<span id="refundAmount">0.00</span></div>
-            </div>
-            
-            <div class="action-buttons">
-                <button onclick="openAllPartPages()">Open Part Pages</button>
-                <button onclick="clearAll()" class="secondary-button">Clear All</button>
-            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button onclick="openAllPartPages()">Open Part Pages</button>
+            <button onclick="clearAll()" class="secondary-button">Clear All</button>
         </div>
     </div>
 
@@ -241,24 +300,27 @@
                 const parts = line.split(/\t|\s\s+/).filter(p => p.trim() !== '');
                 
                 if (parts.length >= 3) {
+                    const quantity = parseInt(parts[0]);
                     partsData.push({
-                        quantity: parseInt(parts[0]),
+                        quantity: quantity,
                         description: parts.slice(1, -1).join(' '),
                         partNumber: parts[parts.length - 1],
                         unitPrice: 0,
-                        returnQuantity: 0
+                        returnQuantity: quantity, // Default to full quantity
+                        lineValue: 0
                     });
                 }
             }
             
             renderPartsTable();
+            updateSummary();
         }
         
         function renderPartsTable() {
             const container = document.getElementById('partsTableContainer');
             
             if (partsData.length === 0) {
-                container.innerHTML = '<p>No parts found. Please paste your kit components in the correct format.</p>';
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No parts found. Please paste your kit components in the correct format.</p>';
                 return;
             }
             
@@ -278,49 +340,60 @@
             `;
             
             partsData.forEach((part, index) => {
+                const lineValue = part.unitPrice * part.returnQuantity;
                 html += `
                     <tr>
                         <td>${part.quantity}</td>
                         <td>${part.description}</td>
-                        <td><a href="https://www.detroitaxle.com/${part.partNumber}" target="_blank">${part.partNumber}</a></td>
+                        <td><a href="https://www.detroitaxle.com/${part.partNumber}" class="part-link" target="_blank">${part.partNumber}</a></td>
                         <td><input type="number" id="price-${index}" value="${part.unitPrice.toFixed(2)}" min="0" step="0.01" onchange="updateUnitPrice(${index}, this.value)"></td>
                         <td><input type="number" id="return-${index}" value="${part.returnQuantity}" min="0" max="${part.quantity}" onchange="updateReturnQuantity(${index}, this.value)"></td>
-                        <td id="lineValue-${index}">$${(part.unitPrice * part.returnQuantity).toFixed(2)}</td>
+                        <td id="lineValue-${index}" class="${lineValue > 0 ? 'highlight' : ''}">$${lineValue.toFixed(2)}</td>
                     </tr>
                 `;
             });
             
             html += `</tbody></table>`;
             container.innerHTML = html;
-            updateSummary();
         }
         
         function updateUnitPrice(index, value) {
-            partsData[index].unitPrice = parseFloat(value) || 0;
+            const unitPrice = parseFloat(value) || 0;
+            partsData[index].unitPrice = unitPrice;
             updateLineValue(index);
             updateSummary();
         }
         
         function updateReturnQuantity(index, value) {
             const max = partsData[index].quantity;
-            partsData[index].returnQuantity = Math.min(parseInt(value) || 0, max);
-            document.getElementById(`return-${index}`).value = partsData[index].returnQuantity;
+            const returnQty = Math.min(parseInt(value) || 0, max);
+            partsData[index].returnQuantity = returnQty;
+            document.getElementById(`return-${index}`).value = returnQty;
             updateLineValue(index);
             updateSummary();
         }
         
         function updateLineValue(index) {
             const part = partsData[index];
-            const value = part.unitPrice * part.returnQuantity;
-            document.getElementById(`lineValue-${index}`).textContent = `$${value.toFixed(2)}`;
+            part.lineValue = part.unitPrice * part.returnQuantity;
+            const lineValueElement = document.getElementById(`lineValue-${index}`);
+            lineValueElement.textContent = `$${part.lineValue.toFixed(2)}`;
+            
+            if (part.lineValue > 0) {
+                lineValueElement.classList.add('highlight');
+            } else {
+                lineValueElement.classList.remove('highlight');
+            }
         }
         
         function updateSummary() {
             const kitPrice = parseFloat(document.getElementById('kitPrice').value) || 0;
             const selectedValue = partsData.reduce((sum, part) => sum + (part.unitPrice * part.returnQuantity), 0);
+            const keptValue = partsData.reduce((sum, part) => sum + (part.unitPrice * (part.quantity - part.returnQuantity)), 0);
             
             document.getElementById('totalKitPrice').textContent = kitPrice.toFixed(2);
             document.getElementById('selectedPartsValue').textContent = selectedValue.toFixed(2);
+            document.getElementById('keptPartsValue').textContent = keptValue.toFixed(2);
             document.getElementById('refundAmount').textContent = (kitPrice - selectedValue).toFixed(2);
         }
         
@@ -343,9 +416,6 @@
             renderPartsTable();
             updateSummary();
         }
-        
-        // Initialize with example data if needed
-        // document.getElementById('kitComponents').value = `2\tFront Driver or Passenger Side Strut w/Coil Spring\t171140\n1\tRack and Pinion Tie Rod Boots (Pair)\tBT-637x2`;
     </script>
 </body>
 </html>
