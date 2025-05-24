@@ -41,8 +41,6 @@
         /* Rest of your existing CSS remains the same */
         /* ... */
 
-        
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,8 +76,9 @@
     }
     th, td {
       border: 1px solid #444;
-      padding: 10px;
+      padding: 6px;
       text-align: center;
+      font-size: 0.9em;
     }
     th {
       background-color: #ff5722;
@@ -130,13 +129,17 @@
     .controls button:hover {
       background-color: #e64a19;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Refunds Calculator</h1>
 
   <textarea id="kitInput" placeholder="Paste your kit component list here..."></textarea>
-  <div class="controls">
+
+  <div class="controls hidden" id="controlsSection">
     <div class="kit-price-input">
       <input type="number" id="kitPrice" placeholder="Enter full kit price ($)">
     </div>
@@ -181,6 +184,8 @@
           currentParts.push({ qty, desc, partNum, price: 0, returned: 0 });
         }
       });
+
+      document.getElementById("controlsSection").classList.toggle("hidden", currentParts.length === 0);
       renderTable(currentParts);
     }
 
@@ -269,6 +274,7 @@
       document.getElementById("kitPrice").value = "";
       document.getElementById("tableContainer").innerHTML = "";
       document.getElementById("refundTotal").textContent = "";
+      document.getElementById("controlsSection").classList.add("hidden");
     }
   </script>
 </body>
