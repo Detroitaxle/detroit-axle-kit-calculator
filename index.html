@@ -1,47 +1,4 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Detroit Axle Part Lookup</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon links -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#e31937">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <meta name="msapplication-TileColor" content="#e31937">
-    <meta name="theme-color" content="#e31937">
-    
-    <style>
-        :root {
-            --primary: #e31937;
-            --primary-dark: #c0102a;
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #f0f0f0;
-            --text-muted: #aaaaaa;
-            --border: #333333;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Rest of your existing CSS remains the same */
-        /* ... */
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -73,16 +30,24 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
+      table-layout: fixed;
     }
     th, td {
       border: 1px solid #444;
-      padding: 6px;
+      padding: 6px 4px;
       text-align: center;
       font-size: 0.9em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     th {
       background-color: #ff5722;
       color: #fff;
+    }
+    td:nth-child(2) {
+      white-space: normal;
+      word-break: break-word;
     }
     input[type="number"] {
       width: 60px;
@@ -103,7 +68,7 @@
       color: #ffccbc;
     }
     .controls {
-      display: flex;
+      display: none;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
@@ -129,17 +94,13 @@
     .controls button:hover {
       background-color: #e64a19;
     }
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
   <h1>Refunds Calculator</h1>
 
   <textarea id="kitInput" placeholder="Paste your kit component list here..."></textarea>
-
-  <div class="controls hidden" id="controlsSection">
+  <div class="controls" id="controlsPanel">
     <div class="kit-price-input">
       <input type="number" id="kitPrice" placeholder="Enter full kit price ($)">
     </div>
@@ -151,6 +112,7 @@
 
   <script>
     const knownSingleItems = ["brake pads", "brake rotors"];
+    const controlsPanel = document.getElementById("controlsPanel");
 
     document.getElementById("kitInput").addEventListener("input", () => {
       processInput();
@@ -184,8 +146,11 @@
           currentParts.push({ qty, desc, partNum, price: 0, returned: 0 });
         }
       });
-
-      document.getElementById("controlsSection").classList.toggle("hidden", currentParts.length === 0);
+      if (currentParts.length > 0) {
+        controlsPanel.style.display = "flex";
+      } else {
+        controlsPanel.style.display = "none";
+      }
       renderTable(currentParts);
     }
 
@@ -274,7 +239,7 @@
       document.getElementById("kitPrice").value = "";
       document.getElementById("tableContainer").innerHTML = "";
       document.getElementById("refundTotal").textContent = "";
-      document.getElementById("controlsSection").classList.add("hidden");
+      controlsPanel.style.display = "none";
     }
   </script>
 </body>
