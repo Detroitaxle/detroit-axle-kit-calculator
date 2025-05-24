@@ -1,507 +1,275 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>Detroit Axle Part Lookup</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detroit Axle Kit Calculator</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <!-- Favicon links -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#e31937">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="msapplication-TileColor" content="#e31937">
+    <meta name="theme-color" content="#e31937">
+    
     <style>
         :root {
-            --orange: #E31937;
-            --dark-bg: #121212;
-            --darker-bg: #0a0a0a;
-            --light-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --border-color: #333;
-            --green-link: #4CAF50;
+            --primary: #e31937;
+            --primary-dark: #c0102a;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #f0f0f0;
+            --text-muted: #aaaaaa;
+            --border: #333333;
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 600px;
             margin: 0 auto;
-        }
-        
-        h1 {
-            color: var(--orange);
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .input-area {
-            background-color: var(--light-bg);
             padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-        
-        textarea {
-            width: 100%;
-            min-height: 150px;
-            background-color: var(--darker-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 5px;
-            resize: vertical;
-            font-family: monospace;
-        }
-        
-        .kit-price-section {
-            margin-top: 15px;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            justify-content: center;
         }
         
-        .kit-price-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        /* Rest of your existing CSS remains the same */
+        /* ... */
+
         
-        .kit-price-input label {
-            font-weight: bold;
-        }
-        
-        .kit-price-input input {
-            background-color: var(--darker-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 8px;
-            border-radius: 5px;
-            width: 100px;
-        }
-        
-        .calculate-btn {
-            background-color: var(--orange);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 20px;
-        }
-        
-        .calculate-btn:hover {
-            opacity: 0.9;
-        }
-        
-        .results {
-            margin-top: 30px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: var(--light-bg);
-            border: 1px solid var(--border-color);
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        th {
-            background-color: var(--darker-bg);
-            color: var(--orange);
-            font-weight: bold;
-        }
-        
-        tr:hover {
-            background-color: rgba(227, 25, 55, 0.1);
-        }
-        
-        a {
-            color: var(--green-link);
-            text-decoration: none;
-        }
-        
-        a:hover {
-            text-decoration: underline;
-        }
-        
-        input[type="number"] {
-            background-color: var(--darker-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 8px;
-            border-radius: 5px;
-            width: 80px;
-        }
-        
-        input[type="number"]:focus {
-            outline: none;
-            border-color: var(--orange);
-        }
-        
-        .summary {
-            margin-top: 20px;
-            background-color: var(--light-bg);
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
-        .summary-item.total {
-            font-weight: bold;
-            font-size: 1.3em;
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: var(--orange);
-            color: white;
-            border-top: none;
-        }
-        
-        .button {
-            background-color: var(--orange);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        
-        .button:hover {
-            opacity: 0.9;
-        }
-        
-        .clear-btn {
-            background-color: #444;
-            margin-left: 10px;
-        }
-        
-        .discount-info {
-            color: var(--orange);
-            font-weight: bold;
-        }
-    </style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refunds Calculator</title>
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #ff7043;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #ff5722;
+    }
+    textarea, input[type="number"] {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #ff5722;
+      color: #fff;
+    }
+    input[type="number"] {
+      width: 60px;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .checkbox {
+      transform: scale(1.2);
+    }
+    .refund-total {
+      font-size: 1.2em;
+      text-align: right;
+      margin-top: 20px;
+      color: #ffccbc;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .kit-price-input {
+      flex-grow: 1;
+      display: flex;
+      gap: 10px;
+    }
+    .kit-price-input input[type="number"] {
+      flex: 1;
+      padding: 8px;
+    }
+    .controls button {
+      background-color: #ff5722;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .controls button:hover {
+      background-color: #e64a19;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Detroit Axle Kit Calculator</h1>
-        
-        <div class="input-area">
-            <h3>Paste Kit Components List:</h3>
-            <textarea id="componentsInput" placeholder="Paste the kit components list here..."></textarea>
-            
-            <div class="kit-price-section">
-                <div class="kit-price-input">
-                    <label for="kitPrice">Kit Price: $</label>
-                    <input type="number" id="kitPrice" min="0" step="0.01" placeholder="0.00">
-                </div>
-                <button class="calculate-btn" id="calculateBtn">Calculate</button>
-            </div>
-        </div>
-        
-        <div class="results" id="results" style="display: none;">
-            <h3>Kit Components</h3>
-            <div class="table-container">
-                <table id="componentsTable">
-                    <thead>
-                        <tr>
-                            <th>Qty</th>
-                            <th>Description</th>
-                            <th>Part #</th>
-                            <th>Unit Price</th>
-                            <th>Total Price</th>
-                            <th>Return Qty</th>
-                            <th>Refund Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="componentsTableBody">
-                        <!-- Table content will be generated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="summary">
-                <div class="summary-item">
-                    <span>Sum of Individual Prices:</span>
-                    <span id="sumIndividualPrices">$0.00</span>
-                </div>
-                <div class="summary-item">
-                    <span>Kit Price:</span>
-                    <span id="displayKitPrice">$0.00</span>
-                </div>
-                <div class="summary-item discount-info">
-                    <span>Discount:</span>
-                    <span id="discountInfo">$0.00 (0%)</span>
-                </div>
-                <div class="summary-item total">
-                    <span>TOTAL REFUND:</span>
-                    <span id="totalRefund">$0.00</span>
-                </div>
-            </div>
-            
-            <button class="button clear-btn" id="clearAllBtn">Clear All</button>
-        </div>
-    </div>
+  <h1>Refunds Calculator</h1>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const componentsInput = document.getElementById('componentsInput');
-            const kitPriceInput = document.getElementById('kitPrice');
-            const calculateBtn = document.getElementById('calculateBtn');
-            const resultsDiv = document.getElementById('results');
-            const componentsTableBody = document.getElementById('componentsTableBody');
-            const sumIndividualPrices = document.getElementById('sumIndividualPrices');
-            const displayKitPrice = document.getElementById('displayKitPrice');
-            const discountInfo = document.getElementById('discountInfo');
-            const totalRefund = document.getElementById('totalRefund');
-            const clearAllBtn = document.getElementById('clearAllBtn');
-            
-            let componentsData = [];
-            let priceInputs = {};
-            let returnQtyInputs = {};
-            
-            // Process input when pasted
-            componentsInput.addEventListener('input', processComponents);
-            
-            // Calculate button click handler
-            calculateBtn.addEventListener('click', function() {
-                // Update all input values from the form
-                updateAllInputValues();
-                // Recalculate all refund amounts
-                recalculateAllRefunds();
-                // Update the summary
-                updateSummary();
-            });
-            
-            // Mark inputs as edited when changed
-            document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('price-input') || e.target.classList.contains('return-qty')) {
-                    e.target.dataset.hasBeenEdited = 'true';
-                }
-            }, true);
-            
-            clearAllBtn.addEventListener('click', clearAll);
-            
-            function processComponents() {
-                const text = componentsInput.value.trim();
-                if (!text) {
-                    resultsDiv.style.display = 'none';
-                    return;
-                }
-                
-                const lines = text.split('\n').filter(line => line.trim());
-                componentsData = [];
-                
-                lines.forEach(line => {
-                    // Split on tabs or multiple spaces
-                    const parts = line.split(/\t|\s{2,}/).filter(part => part.trim());
-                    
-                    if (parts.length >= 3) {
-                        const qty = parseInt(parts[0]) || 1;
-                        const partNumber = parts[parts.length - 1];
-                        const description = parts.slice(1, parts.length - 1).join(' ').trim();
-                        
-                        componentsData.push({
-                            qty: qty,
-                            description: description,
-                            partNumber: partNumber,
-                            unitPrice: 0,
-                            totalPrice: 0,
-                            returnQty: 0,
-                            refundAmount: 0
-                        });
-                    }
-                });
-                
-                renderComponentsTable();
-                resultsDiv.style.display = 'block';
-            }
-            
-            function renderComponentsTable() {
-                componentsTableBody.innerHTML = '';
-                priceInputs = {};
-                returnQtyInputs = {};
-                
-                componentsData.forEach((component, index) => {
-                    const row = document.createElement('tr');
-                    
-                    // Qty
-                    const qtyCell = document.createElement('td');
-                    qtyCell.textContent = component.qty;
-                    row.appendChild(qtyCell);
-                    
-                    // Description
-                    const descCell = document.createElement('td');
-                    descCell.textContent = component.description;
-                    row.appendChild(descCell);
-                    
-                    // Part #
-                    const partCell = document.createElement('td');
-                    const partLink = document.createElement('a');
-                    partLink.href = `https://www.detroitaxle.com/${component.partNumber}`;
-                    partLink.textContent = component.partNumber;
-                    partLink.target = '_blank';
-                    partCell.appendChild(partLink);
-                    row.appendChild(partCell);
-                    
-                    // Unit Price
-                    const priceCell = document.createElement('td');
-                    const priceInput = document.createElement('input');
-                    priceInput.type = 'number';
-                    priceInput.min = '0';
-                    priceInput.step = '0.01';
-                    priceInput.value = component.unitPrice || '';
-                    priceInput.classList.add('price-input');
-                    priceInput.dataset.index = index;
-                    priceInput.placeholder = '0.00';
-                    priceCell.appendChild(priceInput);
-                    row.appendChild(priceCell);
-                    priceInputs[index] = priceInput;
-                    
-                    // Total Price
-                    const totalCell = document.createElement('td');
-                    totalCell.textContent = '$' + component.totalPrice.toFixed(2);
-                    totalCell.dataset.index = index;
-                    row.appendChild(totalCell);
-                    
-                    // Return Qty
-                    const returnCell = document.createElement('td');
-                    const returnInput = document.createElement('input');
-                    returnInput.type = 'number';
-                    returnInput.min = '0';
-                    returnInput.max = component.qty;
-                    returnInput.value = component.returnQty;
-                    returnInput.classList.add('return-qty');
-                    returnInput.dataset.index = index;
-                    returnInput.placeholder = '0';
-                    returnCell.appendChild(returnInput);
-                    row.appendChild(returnCell);
-                    returnQtyInputs[index] = returnInput;
-                    
-                    // Refund Amount
-                    const refundCell = document.createElement('td');
-                    refundCell.textContent = '$' + component.refundAmount.toFixed(2);
-                    refundCell.dataset.index = index;
-                    row.appendChild(refundCell);
-                    
-                    componentsTableBody.appendChild(row);
-                });
-            }
-            
-            function updateAllInputValues() {
-                // Update all unit prices from inputs
-                for (const index in priceInputs) {
-                    const input = priceInputs[index];
-                    componentsData[index].unitPrice = parseFloat(input.value) || 0;
-                    componentsData[index].totalPrice = componentsData[index].unitPrice * componentsData[index].qty;
-                    
-                    // Update total price cell
-                    const totalCell = document.querySelector(`td[data-index="${index}"]:nth-child(5)`);
-                    if (totalCell) {
-                        totalCell.textContent = '$' + componentsData[index].totalPrice.toFixed(2);
-                    }
-                }
-                
-                // Update all return quantities from inputs
-                for (const index in returnQtyInputs) {
-                    const input = returnQtyInputs[index];
-                    componentsData[index].returnQty = Math.min(
-                        componentsData[index].qty, 
-                        Math.max(0, parseInt(input.value) || 0)
-                    );
-                    input.value = componentsData[index].returnQty;
-                }
-            }
-            
-            function recalculateAllRefunds() {
-                const totalIndividualPrice = componentsData.reduce((sum, comp) => sum + (comp.unitPrice * comp.qty), 0);
-                const kitPrice = parseFloat(kitPriceInput.value) || 0;
-                
-                // Calculate discount rate if kit price is set and valid
-                let discountRate = 0;
-                if (kitPrice > 0 && totalIndividualPrice > 0 && kitPrice < totalIndividualPrice) {
-                    discountRate = (totalIndividualPrice - kitPrice) / totalIndividualPrice;
-                }
-                
-                // Recalculate all refund amounts
-                componentsData.forEach((component, index) => {
-                    // Only calculate refund if return quantity is greater than 0
-                    if (component.returnQty > 0 && component.unitPrice > 0) {
-                        // Calculate discounted unit price
-                        const discountedUnitPrice = component.unitPrice * (1 - discountRate);
-                        component.refundAmount = discountedUnitPrice * component.returnQty;
-                    } else {
-                        component.refundAmount = 0;
-                    }
-                    
-                    // Update refund amount cell
-                    const refundCell = document.querySelector(`td[data-index="${index}"]:nth-child(7)`);
-                    if (refundCell) {
-                        refundCell.textContent = '$' + component.refundAmount.toFixed(2);
-                    }
-                });
-            }
-            
-            function updateSummary() {
-                const totalIndividualPrice = componentsData.reduce((sum, component) => {
-                    return sum + (component.unitPrice * component.qty);
-                }, 0);
-                
-                const kitPrice = parseFloat(kitPriceInput.value) || 0;
-                let discountAmount = 0;
-                let discountRate = 0;
-                
-                if (kitPrice > 0 && totalIndividualPrice > 0) {
-                    discountAmount = Math.max(0, totalIndividualPrice - kitPrice);
-                    discountRate = (discountAmount / totalIndividualPrice) * 100;
-                }
-                
-                const totalRefundAmount = componentsData.reduce((sum, component) => {
-                    return sum + component.refundAmount;
-                }, 0);
-                
-                sumIndividualPrices.textContent = '$' + totalIndividualPrice.toFixed(2);
-                displayKitPrice.textContent = '$' + kitPrice.toFixed(2);
-                discountInfo.textContent = `$${discountAmount.toFixed(2)} (${discountRate.toFixed(2)}%)`;
-                totalRefund.textContent = '$' + totalRefundAmount.toFixed(2);
-            }
-            
-            function clearAll() {
-                componentsInput.value = '';
-                kitPriceInput.value = '';
-                resultsDiv.style.display = 'none';
-                componentsData = [];
-                
-                // Reset all inputs
-                for (const index in priceInputs) {
-                    priceInputs[index].value = '';
-                    priceInputs[index].dataset.hasBeenEdited = 'false';
-                }
-                
-                for (const index in returnQtyInputs) {
-                    returnQtyInputs[index].value = '0';
-                    returnQtyInputs[index].dataset.hasBeenEdited = 'false';
-                }
-            }
-        });
-    </script>
+  <textarea id="kitInput" placeholder="Paste your kit component list here..."></textarea>
+  <div class="controls">
+    <div class="kit-price-input">
+      <input type="number" id="kitPrice" placeholder="Enter full kit price ($)">
+    </div>
+    <button onclick="clearAll()">Clear All</button>
+  </div>
+
+  <div id="tableContainer"></div>
+  <div class="refund-total" id="refundTotal"></div>
+
+  <script>
+    const knownSingleItems = ["brake pads", "brake rotors"];
+
+    document.getElementById("kitInput").addEventListener("input", () => {
+      processInput();
+    });
+
+    function normalizeQuantity(desc, qty) {
+      const descLower = desc.toLowerCase();
+      if (knownSingleItems.some(part => descLower.includes(part))) {
+        return 1;
+      }
+      if (descLower.includes("(pair)") && qty == 1) {
+        return 2;
+      }
+      return qty;
+    }
+
+    let currentParts = [];
+
+    function processInput() {
+      const input = document.getElementById("kitInput").value.trim().split(/\n+/);
+      currentParts = [];
+
+      const lineRegex = /^(\d+)x?\s+(.*?)\s+-?\s*(?:[^:]*?:)?\s*([A-Z0-9-]+)?$/i;
+      input.forEach(line => {
+        const match = lineRegex.exec(line);
+        if (match) {
+          let qty = parseInt(match[1]);
+          let desc = match[2].trim();
+          let partNum = match[3] || "";
+          qty = normalizeQuantity(desc, qty);
+          currentParts.push({ qty, desc, partNum, price: 0, returned: 0 });
+        }
+      });
+      renderTable(currentParts);
+    }
+
+    function renderTable(parts) {
+      let tableHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Qty</th>
+              <th>Description</th>
+              <th>Part #</th>
+              <th>Unit Price ($)</th>
+              <th>Returned Qty</th>
+              <th>Refund ($)</th>
+              <th>Returned?</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      parts.forEach((part, index) => {
+        tableHTML += `
+          <tr>
+            <td><input type="number" value="${part.qty}" onchange="update(${index})" id="qty-${index}"></td>
+            <td>${part.desc}</td>
+            <td>${part.partNum}</td>
+            <td><input type="number" placeholder="0" onchange="update(${index})" id="price-${index}"></td>
+            <td><input type="number" placeholder="0" onchange="update(${index})" id="returned-${index}"></td>
+            <td id="refund-${index}">0.00</td>
+            <td><input type="checkbox" class="checkbox" onchange="toggleReturn(${index})" id="check-${index}"></td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `</tbody></table>`;
+      document.getElementById("tableContainer").innerHTML = tableHTML;
+      updateTotal();
+    }
+
+    function update(index) {
+      const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
+      const price = parseFloat(document.getElementById(`price-${index}`).value) || 0;
+      const returned = parseInt(document.getElementById(`returned-${index}`).value) || 0;
+
+      currentParts[index].qty = qty;
+      currentParts[index].price = price;
+      currentParts[index].returned = returned;
+
+      calculateRefunds();
+    }
+
+    function calculateRefunds() {
+      const totalUndiscounted = currentParts.reduce((sum, p) => sum + (p.qty * p.price), 0);
+      const kitPrice = parseFloat(document.getElementById("kitPrice").value) || totalUndiscounted;
+      const discountFactor = totalUndiscounted > 0 ? (kitPrice / totalUndiscounted) : 1;
+
+      let totalRefund = 0;
+
+      currentParts.forEach((part, index) => {
+        const discountedPrice = part.price * discountFactor;
+        const refund = Math.min(part.returned, part.qty) * discountedPrice;
+        totalRefund += refund;
+        document.getElementById(`refund-${index}`).textContent = refund.toFixed(2);
+      });
+
+      document.getElementById("refundTotal").textContent = `Total Refund: $${totalRefund.toFixed(2)}`;
+    }
+
+    function updateTotal() {
+      calculateRefunds();
+    }
+
+    function toggleReturn(index) {
+      const checkbox = document.getElementById(`check-${index}`);
+      const returnedInput = document.getElementById(`returned-${index}`);
+      if (checkbox.checked) {
+        returnedInput.value = document.getElementById(`qty-${index}`).value;
+      } else {
+        returnedInput.value = 0;
+      }
+      update(index);
+    }
+
+    function clearAll() {
+      document.getElementById("kitInput").value = "";
+      document.getElementById("kitPrice").value = "";
+      document.getElementById("tableContainer").innerHTML = "";
+      document.getElementById("refundTotal").textContent = "";
+    }
+  </script>
 </body>
 </html>
