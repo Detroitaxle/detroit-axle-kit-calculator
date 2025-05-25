@@ -4,306 +4,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Refunds Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary-color: #ff7043;
-      --primary-dark: #ff5722;
-      --primary-light: #ffccbc;
-      --bg-color: #1e1e1e;
-      --card-bg: #2d2d2d;
-      --text-color: #e0e0e0;
-      --text-secondary: #b0b0b0;
-      --border-color: #444;
-      --success-color: #4caf50;
-      --error-color: #f44336;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      transition: all 0.3s ease;
-    }
-    
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Roboto', sans-serif;
-      padding: 20px;
-      line-height: 1.6;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
+      background-color: #1a1a1a;
+      color: #ff7043;
+      font-family: Arial, sans-serif;
       padding: 20px;
     }
-    
     h1 {
       text-align: center;
-      color: var(--primary-color);
-      margin-bottom: 30px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      position: relative;
-      padding-bottom: 15px;
+      color: #ff5722;
     }
-    
-    h1::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: var(--primary-dark);
-      border-radius: 3px;
+    textarea, input[type="number"] {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
     }
-    
-    textarea, input[type="number"], input[type="text"] {
-      background-color: var(--card-bg);
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 12px 15px;
-      font-size: 16px;
-      width: 100%;
-    }
-    
-    textarea:focus, input[type="number"]:focus, input[type="text"]:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(255, 112, 67, 0.2);
-    }
-    
     textarea {
+      width: 100%;
       height: 150px;
-      margin-bottom: 20px;
-      resize: vertical;
+      padding: 10px;
+      margin-bottom: 10px;
     }
-    
-    textarea::placeholder, input::placeholder {
-      color: var(--text-secondary);
-      opacity: 0.7;
-    }
-    
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 25px 0;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      overflow: hidden;
+      margin-bottom: 20px;
+      table-layout: auto;
     }
-    
     th, td {
-      border: 1px solid var(--border-color);
-      padding: 12px 15px;
+      border: 1px solid #444;
+      padding: 8px 5px;
       text-align: center;
+      white-space: nowrap;
     }
-    
     th {
-      background-color: var(--primary-dark);
-      color: white;
-      font-weight: 500;
-      text-transform: uppercase;
-      font-size: 14px;
-      letter-spacing: 0.5px;
+      background-color: #ff5722;
+      color: #fff;
     }
-    
-    tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    tr:hover {
-      background-color: rgba(255, 112, 67, 0.1);
-    }
-    
     input[type="number"] {
       -moz-appearance: textfield;
-      width: 80px;
-      text-align: center;
     }
-    
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
-    
     .checkbox {
-      transform: scale(1.3);
-      cursor: pointer;
-      accent-color: var(--primary-color);
+      transform: scale(1.2);
     }
-    
     .refund-total {
-      font-size: 1.5em;
+      font-size: 1.2em;
       text-align: right;
-      margin-top: 30px;
-      padding: 15px 20px;
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-      color: var(--primary-light);
-      font-weight: 500;
-      animation: fadeIn 0.5s ease-out;
+      margin-top: 20px;
+      color: #ffccbc;
     }
-    
-    .refund-total.highlight {
-      animation: pulse 1.5s infinite;
-    }
-    
     .controls {
       display: none;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
-      gap: 15px;
-      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 10px;
     }
-    
     .kit-price-input {
       flex-grow: 1;
       display: flex;
-      gap: 15px;
-      align-items: center;
-      min-width: 300px;
+      gap: 10px;
     }
-    
-    .kit-price-input label {
-      white-space: nowrap;
-      color: var(--text-secondary);
+    .kit-price-input input[type="number"] {
+      flex: 1;
+      padding: 8px;
     }
-    
     .controls button {
-      background-color: var(--primary-dark);
+      background-color: #ff5722;
       color: white;
       border: none;
-      padding: 12px 25px;
+      padding: 10px;
       cursor: pointer;
-      border-radius: 4px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-size: 14px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      white-space: nowrap;
     }
-    
     .controls button:hover {
-      background-color: var(--primary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-    
-    .controls button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
-    }
-    
-    .status-message {
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 4px;
-      display: none;
-      animation: slideIn 0.3s ease-out;
-    }
-    
-    .status-message.success {
-      background-color: rgba(76, 175, 80, 0.2);
-      border-left: 4px solid var(--success-color);
-      display: block;
-    }
-    
-    .status-message.error {
-      background-color: rgba(244, 67, 54, 0.2);
-      border-left: 4px solid var(--error-color);
-      display: block;
-    }
-    
-    .part-desc {
-      text-align: left;
-      max-width: 300px;
-      white-space: normal;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-20px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-    
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255, 112, 67, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(255, 112, 67, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(255, 112, 67, 0); }
-    }
-    
-    @media (max-width: 768px) {
-      .controls {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .kit-price-input {
-        min-width: auto;
-      }
-      
-      th, td {
-        padding: 8px 10px;
-        font-size: 14px;
-      }
-      
-      input[type="number"] {
-        width: 60px;
-      }
+      background-color: #e64a19;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Refunds Calculator</h1>
-    
-    <div id="statusMessage" class="status-message"></div>
-    
-    <textarea id="kitInput" placeholder="Paste your kit component list here...&#10;Example:&#10;2x Brake Pads - ABC-123&#10;1x Rotors (Pair) - XYZ-456"></textarea>
-    
-    <div class="controls" id="controls">
-      <div class="kit-price-input">
-        <label for="kitPrice">Kit Price ($):</label>
-        <input type="number" id="kitPrice" placeholder="Enter full kit price">
-      </div>
-      <button onclick="clearAll()">Clear All</button>
-    </div>
+  <h1>Refunds Calculator</h1>
 
-    <div id="tableContainer"></div>
-    <div class="refund-total" id="refundTotal"></div>
+  <textarea id="kitInput" placeholder="Paste your kit component list here..."></textarea>
+  <div class="controls" id="controls">
+    <div class="kit-price-input">
+      <input type="number" id="kitPrice" placeholder="Enter full kit price ($)">
+    </div>
+    <button onclick="clearAll()">Clear All</button>
   </div>
+
+  <div id="tableContainer"></div>
+  <div class="refund-total" id="refundTotal"></div>
 
   <script>
     const knownSingleItems = ["brake pads", "brake rotors"];
     let currentParts = [];
-    let lastTotalRefund = 0;
 
     document.getElementById("kitInput").addEventListener("input", () => {
       processInput();
     });
-
-    function showStatus(message, isError = false) {
-      const statusEl = document.getElementById("statusMessage");
-      statusEl.textContent = message;
-      statusEl.className = `status-message ${isError ? 'error' : 'success'}`;
-      
-      setTimeout(() => {
-        statusEl.className = "status-message";
-      }, 5000);
-    }
 
     function normalizeQuantity(desc, qty) {
       const descLower = desc.toLowerCase();
@@ -313,55 +118,30 @@
       if (descLower.includes("(pair)") && qty == 1) {
         return 2;
       }
-      if (descLower.includes("pair of") && qty == 1) {
-        return 2;
-      }
       return qty;
     }
 
     function processInput() {
-      const input = document.getElementById("kitInput").value.trim();
-      if (!input) {
-        document.getElementById("controls").style.display = "none";
-        document.getElementById("tableContainer").innerHTML = "";
-        document.getElementById("refundTotal").textContent = "";
-        return;
-      }
-
-      const lines = input.split(/\n+/);
+      const input = document.getElementById("kitInput").value.trim().split(/\n+/);
       currentParts = [];
-      let parseSuccess = false;
 
-      const lineRegex = /^(\d+)x?\s+(.*?)(?:\s+-\s*(?:[^:]*?:)?\s*([A-Z0-9-]+))?$/i;
-      lines.forEach(line => {
-        line = line.trim();
-        if (!line) return;
-
+      const lineRegex = /^(\d+)x?\s+(.*?)\s+-?\s*(?:[^:]*?:)?\s*([A-Z0-9-]+)?$/i;
+      input.forEach(line => {
         const match = lineRegex.exec(line);
         if (match) {
           let qty = parseInt(match[1]);
           let desc = match[2].trim();
-          let partNum = match[3] ? match[3].trim() : "";
+          let partNum = match[3] || "";
           qty = normalizeQuantity(desc, qty);
           currentParts.push({ qty, desc, partNum, price: 0, returned: 0 });
-          parseSuccess = true;
         }
       });
-
       if (currentParts.length > 0) {
         document.getElementById("controls").style.display = "flex";
-        renderTable(currentParts);
-        if (!parseSuccess) {
-          showStatus("Some lines couldn't be parsed. Please check your format.", true);
-        } else {
-          showStatus(`${currentParts.length} items detected`, false);
-        }
       } else {
         document.getElementById("controls").style.display = "none";
-        document.getElementById("tableContainer").innerHTML = "";
-        document.getElementById("refundTotal").textContent = "";
-        showStatus("No items detected. Please check your format.", true);
       }
+      renderTable(currentParts);
     }
 
     function renderTable(parts) {
@@ -370,12 +150,12 @@
           <thead>
             <tr>
               <th>Qty</th>
-              <th class="part-desc">Description</th>
+              <th style="width: 30%">Description</th>
               <th>Part #</th>
               <th>Unit Price ($)</th>
-              <th>Returned</th>
+              <th>Returned Qty</th>
               <th>Refund ($)</th>
-              <th>All</th>
+              <th>Returned?</th>
             </tr>
           </thead>
           <tbody>
@@ -384,13 +164,13 @@
       parts.forEach((part, index) => {
         tableHTML += `
           <tr>
-            <td><input type="number" value="${part.qty}" min="0" onchange="updateQty(${index})" id="qty-${index}"></td>
-            <td class="part-desc">${part.desc}</td>
-            <td>${part.partNum || '-'}</td>
-            <td><input type="number" value="${part.price}" min="0" step="0.01" onchange="updatePrice(${index})" id="price-${index}" placeholder="0.00"></td>
-            <td><input type="number" value="${part.returned}" min="0" max="${part.qty}" onchange="updateReturned(${index})" id="returned-${index}" placeholder="0"></td>
+            <td><input type="number" value="${part.qty}" onchange="update(${index})" id="qty-${index}"></td>
+            <td>${part.desc}</td>
+            <td>${part.partNum}</td>
+            <td><input type="number" placeholder="0" onchange="update(${index})" id="price-${index}"></td>
+            <td><input type="number" placeholder="0" onchange="update(${index})" id="returned-${index}"></td>
             <td id="refund-${index}">0.00</td>
-            <td><input type="checkbox" class="checkbox" onchange="toggleReturn(${index})" id="check-${index}" ${part.returned === part.qty ? 'checked' : ''}></td>
+            <td><input type="checkbox" class="checkbox" onchange="toggleReturn(${index})" id="check-${index}"></td>
           </tr>
         `;
       });
@@ -400,45 +180,15 @@
       calculateRefunds();
     }
 
-    function updateQty(index) {
-      const qtyInput = document.getElementById(`qty-${index}`);
-      let qty = parseInt(qtyInput.value) || 0;
-      qty = Math.max(0, qty);
-      qtyInput.value = qty;
-      
-      currentParts[index].qty = qty;
-      
-      // Update max for returned quantity
-      const returnedInput = document.getElementById(`returned-${index}`);
-      returnedInput.max = qty;
-      if (parseInt(returnedInput.value) > qty) {
-        returnedInput.value = qty;
-        currentParts[index].returned = qty;
-      }
-      
-      // Update checkbox
-      document.getElementById(`check-${index}`).checked = currentParts[index].returned === qty;
-      
-      calculateRefunds();
-    }
-
-    function updatePrice(index) {
+    function update(index) {
+      const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
       const price = parseFloat(document.getElementById(`price-${index}`).value) || 0;
-      currentParts[index].price = Math.max(0, price);
-      calculateRefunds();
-    }
+      const returned = parseInt(document.getElementById(`returned-${index}`).value) || 0;
 
-    function updateReturned(index) {
-      const returnedInput = document.getElementById(`returned-${index}`);
-      let returned = parseInt(returnedInput.value) || 0;
-      returned = Math.max(0, Math.min(returned, currentParts[index].qty));
-      returnedInput.value = returned;
-      
+      currentParts[index].qty = qty;
+      currentParts[index].price = price;
       currentParts[index].returned = returned;
-      
-      // Update checkbox
-      document.getElementById(`check-${index}`).checked = returned === currentParts[index].qty;
-      
+
       calculateRefunds();
     }
 
@@ -453,44 +203,21 @@
         const discountedPrice = part.price * discountFactor;
         const refund = Math.min(part.returned, part.qty) * discountedPrice;
         totalRefund += refund;
-        
-        const refundEl = document.getElementById(`refund-${index}`);
-        refundEl.textContent = refund.toFixed(2);
-        
-        // Highlight if refund > 0
-        if (refund > 0) {
-          refundEl.style.color = "var(--primary-light)";
-          refundEl.style.fontWeight = "bold";
-        } else {
-          refundEl.style.color = "";
-          refundEl.style.fontWeight = "";
-        }
+        document.getElementById(`refund-${index}`).textContent = refund.toFixed(2);
       });
 
-      const refundTotalEl = document.getElementById("refundTotal");
-      refundTotalEl.textContent = `Total Refund: $${totalRefund.toFixed(2)}`;
-      
-      // Highlight if total changed
-      if (Math.abs(totalRefund - lastTotalRefund) > 0.01) {
-        refundTotalEl.classList.add('highlight');
-        setTimeout(() => {
-          refundTotalEl.classList.remove('highlight');
-        }, 1500);
-      }
-      lastTotalRefund = totalRefund;
+      document.getElementById("refundTotal").textContent = `Total Refund: $${totalRefund.toFixed(2)}`;
     }
 
     function toggleReturn(index) {
       const checkbox = document.getElementById(`check-${index}`);
       const returnedInput = document.getElementById(`returned-${index}`);
       if (checkbox.checked) {
-        returnedInput.value = currentParts[index].qty;
-        currentParts[index].returned = currentParts[index].qty;
+        returnedInput.value = document.getElementById(`qty-${index}`).value;
       } else {
         returnedInput.value = 0;
-        currentParts[index].returned = 0;
       }
-      calculateRefunds();
+      update(index);
     }
 
     function clearAll() {
@@ -499,9 +226,6 @@
       document.getElementById("tableContainer").innerHTML = "";
       document.getElementById("refundTotal").textContent = "";
       document.getElementById("controls").style.display = "none";
-      document.getElementById("statusMessage").className = "status-message";
-      currentParts = [];
-      showStatus("Cleared all data", false);
     }
   </script>
 </body>
