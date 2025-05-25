@@ -342,16 +342,6 @@
           let qty = parseInt(match[1]);
           let desc = match[2].trim();
           let partNum = match[3] ? match[3].trim() : "";
-          
-          // Remove part number from description if it was included there
-          if (!partNum) {
-            const descParts = desc.split(/\s+-\s+/);
-            if (descParts.length > 1 && descParts[1].match(/^[A-Z0-9-]+$/)) {
-              desc = descParts[0].trim();
-              partNum = descParts[1].trim();
-            }
-          }
-          
           qty = normalizeQuantity(desc, qty);
           currentParts.push({ qty, desc, partNum, price: 0, returned: 0 });
           parseSuccess = true;
