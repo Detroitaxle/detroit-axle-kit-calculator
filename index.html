@@ -5,86 +5,212 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Refunds Calculator</title>
   <style>
-    body {
-      background-color: #1a1a1a;
-      color: #ff7043;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+    :root {
+      --primary-color: #ff5722;
+      --primary-dark: #e64a19;
+      --primary-light: #ffccbc;
+      --background-dark: #1a1a1a;
+      --background-darker: #121212;
+      --text-primary: #ffffff;
+      --text-secondary: #bdbdbd;
+      --accent-color: #ff7043;
+      --border-color: #444;
+      --table-header-bg: #2a2a2a;
     }
+    
+    body {
+      background-color: var(--background-dark);
+      color: var(--text-primary);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      transition: all 0.3s ease;
+    }
+    
     h1 {
       text-align: center;
-      color: #ff5722;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-    textarea, input[type="number"] {
-      background-color: #333;
-      color: #fff;
-      border: 1px solid #555;
+    
+    textarea, input[type="number"], input[type="text"] {
+      background-color: var(--background-darker);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 12px;
+      font-size: 14px;
+      transition: all 0.3s ease;
     }
+    
+    textarea:focus, input[type="number"]:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+    }
+    
     textarea {
       width: 100%;
       height: 150px;
-      padding: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      resize: vertical;
     }
+    
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       table-layout: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
+    
     th, td {
-      border: 1px solid #444;
-      padding: 8px 5px;
+      border: 1px solid var(--border-color);
+      padding: 12px 8px;
       text-align: center;
       white-space: nowrap;
+      transition: all 0.2s ease;
     }
+    
     th {
-      background-color: #ff5722;
-      color: #fff;
+      background-color: var(--table-header-bg);
+      color: var(--primary-light);
+      font-weight: 500;
+      position: sticky;
+      top: 0;
     }
+    
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    tr:hover {
+      background-color: rgba(255, 87, 34, 0.05);
+    }
+    
     input[type="number"] {
       -moz-appearance: textfield;
+      width: 80px;
+      padding: 8px;
+      text-align: center;
     }
+    
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
+    
     .checkbox {
-      transform: scale(1.2);
+      transform: scale(1.3);
+      cursor: pointer;
+      accent-color: var(--primary-color);
     }
+    
     .refund-total {
-      font-size: 1.2em;
+      font-size: 1.4em;
       text-align: right;
       margin-top: 20px;
-      color: #ffccbc;
+      color: var(--primary-light);
+      font-weight: 600;
+      padding: 15px;
+      background-color: var(--background-darker);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
     }
+    
+    .refund-total:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
     .controls {
       display: none;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      gap: 10px;
+      margin-bottom: 25px;
+      gap: 15px;
+      flex-wrap: wrap;
+      animation: fadeIn 0.5s ease;
     }
+    
     .kit-price-input {
       flex-grow: 1;
       display: flex;
-      gap: 10px;
+      gap: 15px;
+      align-items: center;
+      min-width: 300px;
     }
-    .kit-price-input input[type="number"] {
-      flex: 1;
-      padding: 8px;
-    }
-    .controls button {
-      background-color: #ff5722;
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
+    
+    .kit-price-input label {
+      color: var(--text-secondary);
       white-space: nowrap;
     }
+    
+    .kit-price-input input[type="number"] {
+      flex: 1;
+      padding: 10px;
+      max-width: 200px;
+    }
+    
+    .controls button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
     .controls button:hover {
-      background-color: #e64a19;
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .controls button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .part-description {
+      text-align: left;
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      th, td {
+        padding: 8px 4px;
+        font-size: 0.9em;
+      }
+      
+      .kit-price-input {
+        min-width: 100%;
+      }
+      
+      .controls button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -94,7 +220,8 @@
   <textarea id="kitInput" placeholder="Paste your kit component list here..."></textarea>
   <div class="controls" id="controls">
     <div class="kit-price-input">
-      <input type="number" id="kitPrice" placeholder="Enter full kit price ($)">
+      <label for="kitPrice">Full Kit Price ($):</label>
+      <input type="number" id="kitPrice" placeholder="Enter full kit price">
     </div>
     <button onclick="clearAll()">Clear All</button>
   </div>
@@ -150,7 +277,7 @@
           <thead>
             <tr>
               <th>Qty</th>
-              <th style="width: 30%">Description</th>
+              <th class="part-description">Description</th>
               <th>Part #</th>
               <th>Unit Price ($)</th>
               <th>Returned Qty</th>
@@ -165,7 +292,7 @@
         tableHTML += `
           <tr>
             <td><input type="number" value="${part.qty}" onchange="update(${index})" id="qty-${index}"></td>
-            <td>${part.desc}</td>
+            <td class="part-description">${part.desc}</td>
             <td>${part.partNum}</td>
             <td><input type="number" placeholder="0" onchange="update(${index})" id="price-${index}"></td>
             <td><input type="number" placeholder="0" onchange="update(${index})" id="returned-${index}"></td>
