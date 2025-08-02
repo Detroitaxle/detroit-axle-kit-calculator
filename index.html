@@ -3,239 +3,581 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Refunds Calculator</title>
+  <title>Detroit Axle Kit Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #ff5722;
-      --primary-dark: #e64a19;
-      --primary-light: #ffccbc;
-      --background-dark: #1a1a1a;
-      --background-darker: #121212;
-      --text-primary: #ffffff;
-      --text-secondary: #bdbdbd;
-      --accent-color: #ff7043;
-      --border-color: #444;
-      --table-header-bg: #2a2a2a;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #3b82f6;
+      --secondary: #64748b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --background: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 8px;
+      --radius-lg: 12px;
     }
-    
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: var(--background-dark);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--background) 0%, #0c1426 100%);
       color: var(--text-primary);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 20px;
-      max-width: 1200px;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
       margin: 0 auto;
-      transition: all 0.3s ease;
+      padding: 2rem;
     }
-    
-    h1 {
+
+    .header {
       text-align: center;
-      color: var(--primary-color);
-      margin-bottom: 30px;
-      font-weight: 600;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      margin-bottom: 3rem;
     }
-    
-    textarea, input[type="number"], input[type="text"] {
-      background-color: var(--background-darker);
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .input-section {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
       color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 12px;
-      font-size: 14px;
+    }
+
+    .section-title i {
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .textarea-wrapper {
+      position: relative;
+    }
+
+    .kit-input {
+      width: 100%;
+      min-height: 200px;
+      background: var(--background);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 0.9rem;
+      resize: vertical;
       transition: all 0.3s ease;
     }
-    
-    textarea:focus, input[type="number"]:focus, input[type="text"]:focus {
+
+    .kit-input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(255, 87, 34, 0.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
-    
-    textarea {
-      width: 100%;
-      height: 150px;
-      margin-bottom: 20px;
-      resize: vertical;
+
+    .kit-input::placeholder {
+      color: var(--text-muted);
     }
-    
-    table {
+
+    .price-input-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--background);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .price-input-group:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .price-input-group i {
+      color: var(--text-muted);
+    }
+
+    .price-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .price-input:focus {
+      outline: none;
+    }
+
+    .price-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+      background: var(--surface-light);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-light);
+      color: var(--text-primary);
+    }
+
+    .summary-panel {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      position: sticky;
+      top: 2rem;
+    }
+
+    .summary-stats {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--background);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-value.success {
+      color: var(--success);
+    }
+
+    .stat-value.primary {
+      color: var(--primary-light);
+    }
+
+    .table-container {
+      grid-column: 1 / -1;
+      margin-top: 2rem;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+
+    .table-header {
+      background: var(--background);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .parts-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 30px;
-      table-layout: auto;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
     }
-    
-    th, td {
-      border: 1px solid var(--border-color);
-      padding: 12px 8px;
-      text-align: center;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-    
-    th {
-      background-color: var(--table-header-bg);
-      color: var(--primary-light);
-      font-weight: 500;
-      position: sticky;
-      top: 0;
-    }
-    
-    tr:nth-child(even) {
-      background-color: rgba(255, 255, 255, 0.03);
-    }
-    
-    tr:hover {
-      background-color: rgba(255, 87, 34, 0.05);
-    }
-    
-    input[type="number"] {
-      -moz-appearance: textfield;
-      width: 80px;
-      padding: 8px;
-      text-align: center;
-    }
-    
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    
-    .checkbox {
-      transform: scale(1.3);
-      cursor: pointer;
-      accent-color: var(--primary-color);
-    }
-    
-    .refund-total {
-      font-size: 1.4em;
-      text-align: right;
-      margin-top: 20px;
-      color: var(--primary-light);
-      font-weight: 600;
-      padding: 15px;
-      background-color: var(--background-darker);
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .refund-total:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    }
-    
-    .controls {
-      display: none;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-      gap: 15px;
-      flex-wrap: wrap;
-      animation: fadeIn 0.5s ease;
-    }
-    
-    .kit-price-input {
-      flex-grow: 1;
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      min-width: 300px;
-    }
-    
-    .kit-price-input label {
+
+    .parts-table th {
+      background: var(--surface-light);
       color: var(--text-secondary);
-      white-space: nowrap;
-    }
-    
-    .kit-price-input input[type="number"] {
-      flex: 1;
-      padding: 10px;
-      max-width: 200px;
-    }
-    
-    .controls button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      cursor: pointer;
-      white-space: nowrap;
-      border-radius: 4px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    .controls button:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-    
-    .controls button:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .part-description {
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1rem;
       text-align: left;
-      max-width: 300px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      border-bottom: 1px solid var(--border);
     }
-    
+
+    .parts-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .parts-table tr:hover {
+      background: rgba(37, 99, 235, 0.05);
+    }
+
+    .part-description {
+      font-weight: 500;
+      color: var(--text-primary);
+      max-width: 300px;
+    }
+
+    .part-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: var(--background);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .table-input {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      width: 80px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .table-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custom-checkbox {
+      position: relative;
+      width: 20px;
+      height: 20px;
+    }
+
+    .custom-checkbox input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--background);
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .custom-checkbox input:checked + .checkmark {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked + .checkmark:after {
+      display: block;
+    }
+
+    .refund-amount {
+      font-weight: 600;
+      color: var(--success);
+      font-size: 0.95rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--border-light);
+    }
+
+    .empty-state h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .summary-panel {
+        position: static;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+
     @media (max-width: 768px) {
-      body {
-        padding: 15px;
+      .parts-table {
+        font-size: 0.85rem;
       }
-      
-      th, td {
-        padding: 8px 4px;
-        font-size: 0.9em;
+
+      .parts-table th,
+      .parts-table td {
+        padding: 0.75rem 0.5rem;
       }
-      
-      .kit-price-input {
-        min-width: 100%;
+
+      .controls {
+        flex-direction: column;
       }
-      
-      .controls button {
-        width: 100%;
+
+      .btn {
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Refunds Calculator</h1>
-
-  <textarea id="kitInput" placeholder="Paste your kit component list here..."></textarea>
-  <div class="controls" id="controls">
-    <div class="kit-price-input">
-      <label for="kitPrice">Full Kit Price ($):</label>
-      <input type="number" id="kitPrice" placeholder="Enter full kit price" onchange="calculateRefunds()">
+  <div class="container">
+    <div class="header">
+      <h1>Detroit Axle Kit Calculator</h1>
+      <p>Calculate refunds for returned automotive parts with precision</p>
     </div>
-    <button onclick="clearAll()">Clear All</button>
+
+    <div class="main-grid">
+      <div class="input-section">
+        <h2 class="section-title">
+          <i class="fas fa-clipboard-list"></i>
+          Kit Components
+        </h2>
+        
+        <div class="input-group">
+          <label class="input-label" for="kitInput">
+            Paste your kit component list below
+          </label>
+          <div class="textarea-wrapper">
+            <textarea 
+              id="kitInput" 
+              class="kit-input" 
+              placeholder="Example:&#10;2x Front Brake Rotors - ABC123&#10;1x Brake Pad Set (Pair) - DEF456&#10;4x Wheel Bolts - GHI789"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="kitPrice">
+            Full Kit Price
+          </label>
+          <div class="price-input-group">
+            <i class="fas fa-dollar-sign"></i>
+            <input 
+              type="number" 
+              id="kitPrice" 
+              class="price-input" 
+              placeholder="Enter total kit price"
+              step="0.01"
+              min="0"
+            >
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-primary" onclick="calculateRefunds()">
+            <i class="fas fa-calculator"></i>
+            Calculate Refunds
+          </button>
+          <button class="btn btn-secondary" onclick="clearAll()">
+            <i class="fas fa-trash"></i>
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <div class="summary-panel">
+        <h2 class="section-title">
+          <i class="fas fa-chart-line"></i>
+          Summary
+        </h2>
+        
+        <div class="summary-stats">
+          <div class="stat-card">
+            <div class="stat-label">Total Parts</div>
+            <div class="stat-value" id="totalParts">0</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Kit Value</div>
+            <div class="stat-value primary" id="kitValue">$0.00</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Total Refund</div>
+            <div class="stat-value success" id="totalRefund">$0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container" id="tableContainer">
+      <div class="empty-state">
+        <i class="fas fa-box-open"></i>
+        <h3>No parts loaded</h3>
+        <p>Paste your kit component list above to get started</p>
+      </div>
+    </div>
   </div>
 
-  <div id="tableContainer"></div>
-  <div class="refund-total" id="refundTotal"></div>
-
   <script>
-    const knownSingleItems = ["brake pads", "brake rotors"];
+    const knownSingleItems = ["brake pads", "brake rotors", "brake pad"];
     let currentParts = [];
 
-    document.getElementById("kitInput").addEventListener("input", () => {
-      processInput();
-    });
+    document.getElementById("kitInput").addEventListener("input", processInput);
+    document.getElementById("kitPrice").addEventListener("input", calculateRefunds);
 
     function normalizeQuantity(desc, qty) {
       const descLower = desc.toLowerCase();
@@ -249,77 +591,160 @@
     }
 
     function processInput() {
-      const input = document.getElementById("kitInput").value.trim().split(/\n+/);
+      const input = document.getElementById("kitInput").value.trim();
+      if (!input) {
+        currentParts = [];
+        renderEmptyState();
+        updateSummary();
+        return;
+      }
+
+      const lines = input.split(/\n+/);
       currentParts = [];
 
-      const lineRegex = /^(\d+)x?\s+(.*?)\s+-?\s*(?:[^:]*?:)?\s*([A-Z0-9-]+)?$/i;
-      input.forEach(line => {
-        const match = lineRegex.exec(line);
+      const lineRegex = /^(\d+)x?\s+(.*?)\s*(?:-\s*([A-Z0-9-]+))?$/i;
+      
+      lines.forEach(line => {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) return;
+        
+        const match = lineRegex.exec(trimmedLine);
         if (match) {
           let qty = parseInt(match[1]);
           let desc = match[2].trim();
           let partNum = match[3] || "";
+          
           qty = normalizeQuantity(desc, qty);
-          currentParts.push({ qty, desc, partNum, price: 0, returned: 0 });
+          currentParts.push({ 
+            qty, 
+            desc, 
+            partNum, 
+            price: 0, 
+            returned: 0,
+            isReturned: false
+          });
         }
       });
+
       if (currentParts.length > 0) {
-        document.getElementById("controls").style.display = "flex";
+        renderTable();
       } else {
-        document.getElementById("controls").style.display = "none";
+        renderEmptyState();
       }
-      renderTable(currentParts);
+      
+      updateSummary();
     }
 
-    function renderTable(parts) {
+    function renderEmptyState() {
+      document.getElementById("tableContainer").innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <h3>No parts loaded</h3>
+          <p>Paste your kit component list above to get started</p>
+        </div>
+      `;
+    }
+
+    function renderTable() {
       let tableHTML = `
-        <table>
+        <div class="table-header">
+          <h3><i class="fas fa-cogs"></i> Parts Breakdown</h3>
+        </div>
+        <table class="parts-table">
           <thead>
             <tr>
               <th>Qty</th>
-              <th class="part-description">Description</th>
-              <th>Part #</th>
-              <th>Unit Price ($)</th>
-              <th>Returned Qty</th>
-              <th>Refund ($)</th>
-              <th>Returned?</th>
+              <th>Description</th>
+              <th>Part Number</th>
+              <th>Unit Price</th>
+              <th>Returned</th>
+              <th>Refund</th>
+              <th>Return</th>
             </tr>
           </thead>
           <tbody>
       `;
 
-      parts.forEach((part, index) => {
+      currentParts.forEach((part, index) => {
         tableHTML += `
           <tr>
-            <td><input type="number" value="${part.qty}" onchange="update(${index})" id="qty-${index}"></td>
+            <td>
+              <input type="number" class="table-input" value="${part.qty}" 
+                     onchange="updatePart(${index}, 'qty', this.value)" min="0">
+            </td>
             <td class="part-description">${part.desc}</td>
-            <td>${part.partNum}</td>
-            <td><input type="number" placeholder="0" onchange="update(${index})" id="price-${index}"></td>
-            <td><input type="number" placeholder="0" onchange="update(${index})" id="returned-${index}"></td>
-            <td id="refund-${index}">0.00</td>
-            <td><input type="checkbox" class="checkbox" onchange="toggleReturn(${index})" id="check-${index}"></td>
+            <td>
+              ${part.partNum ? `<span class="part-number">${part.partNum}</span>` : '-'}
+            </td>
+            <td>
+              <input type="number" class="table-input" placeholder="0.00" 
+                     onchange="updatePart(${index}, 'price', this.value)" 
+                     step="0.01" min="0" style="width: 100px;">
+            </td>
+            <td>
+              <input type="number" class="table-input" value="${part.returned}" 
+                     onchange="updatePart(${index}, 'returned', this.value)" 
+                     min="0" max="${part.qty}">
+            </td>
+            <td class="refund-amount" id="refund-${index}">$0.00</td>
+            <td>
+              <div class="checkbox-wrapper">
+                <label class="custom-checkbox">
+                  <input type="checkbox" onchange="toggleReturn(${index})" 
+                         ${part.isReturned ? 'checked' : ''}>
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+            </td>
           </tr>
         `;
       });
 
       tableHTML += `</tbody></table>`;
-      document.getElementById("tableContainer").innerHTML = tableHTML;
+      
+      const container = document.getElementById("tableContainer");
+      container.innerHTML = tableHTML;
+      container.classList.add('fade-in');
+      
       calculateRefunds();
     }
 
-    function update(index) {
-      const qty = parseInt(document.getElementById(`qty-${index}`).value) || 0;
-      const price = parseFloat(document.getElementById(`price-${index}`).value) || 0;
-      const returned = parseInt(document.getElementById(`returned-${index}`).value) || 0;
+    function updatePart(index, field, value) {
+      const numValue = parseFloat(value) || 0;
+      currentParts[index][field] = numValue;
+      
+      if (field === 'returned') {
+        const maxReturned = currentParts[index].qty;
+        if (numValue > maxReturned) {
+          currentParts[index].returned = maxReturned;
+          event.target.value = maxReturned;
+        }
+      }
+      
+      calculateRefunds();
+    }
 
-      currentParts[index].qty = qty;
-      currentParts[index].price = price;
-      currentParts[index].returned = returned;
-
+    function toggleReturn(index) {
+      const checkbox = event.target;
+      const returnedInput = checkbox.closest('tr').querySelector('input[type="number"]:nth-of-type(3)');
+      
+      if (checkbox.checked) {
+        const qty = currentParts[index].qty;
+        currentParts[index].returned = qty;
+        currentParts[index].isReturned = true;
+        returnedInput.value = qty;
+      } else {
+        currentParts[index].returned = 0;
+        currentParts[index].isReturned = false;
+        returnedInput.value = 0;
+      }
+      
       calculateRefunds();
     }
 
     function calculateRefunds() {
+      if (currentParts.length === 0) return;
+
       const totalUndiscounted = currentParts.reduce((sum, p) => sum + (p.qty * p.price), 0);
       const kitPrice = parseFloat(document.getElementById("kitPrice").value) || totalUndiscounted;
       const discountFactor = totalUndiscounted > 0 ? (kitPrice / totalUndiscounted) : 1;
@@ -330,30 +755,32 @@
         const discountedPrice = part.price * discountFactor;
         const refund = Math.min(part.returned, part.qty) * discountedPrice;
         totalRefund += refund;
-        document.getElementById(`refund-${index}`).textContent = refund.toFixed(2);
+        
+        const refundElement = document.getElementById(`refund-${index}`);
+        if (refundElement) {
+          refundElement.textContent = `$${refund.toFixed(2)}`;
+        }
       });
 
-      document.getElementById("refundTotal").textContent = `Total Refund: $${totalRefund.toFixed(2)}`;
+      updateSummary(totalRefund, kitPrice);
     }
 
-    function toggleReturn(index) {
-      const checkbox = document.getElementById(`check-${index}`);
-      const returnedInput = document.getElementById(`returned-${index}`);
-      if (checkbox.checked) {
-        returnedInput.value = document.getElementById(`qty-${index}`).value;
-      } else {
-        returnedInput.value = 0;
-      }
-      update(index);
+    function updateSummary(totalRefund = 0, kitValue = 0) {
+      document.getElementById("totalParts").textContent = currentParts.length;
+      document.getElementById("kitValue").textContent = `$${kitValue.toFixed(2)}`;
+      document.getElementById("totalRefund").textContent = `$${totalRefund.toFixed(2)}`;
     }
 
     function clearAll() {
       document.getElementById("kitInput").value = "";
       document.getElementById("kitPrice").value = "";
-      document.getElementById("tableContainer").innerHTML = "";
-      document.getElementById("refundTotal").textContent = "";
-      document.getElementById("controls").style.display = "none";
+      currentParts = [];
+      renderEmptyState();
+      updateSummary();
     }
+
+    // Initialize
+    updateSummary();
   </script>
 </body>
 </html>
