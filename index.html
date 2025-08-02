@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Detroit Axle Kit Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <title>Detroit Axle Kit Calculator - Interactive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --primary-light: #3b82f6;
-      --secondary: #64748b;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #60a5fa;
+      --secondary: #6366f1;
+      --accent: #f59e0b;
       --success: #10b981;
       --warning: #f59e0b;
       --error: #ef4444;
       --background: #0f172a;
       --surface: #1e293b;
       --surface-light: #334155;
+      --surface-hover: #475569;
       --text-primary: #f8fafc;
       --text-secondary: #cbd5e1;
       --text-muted: #94a3b8;
       --border: #334155;
       --border-light: #475569;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --radius: 8px;
-      --radius-lg: 12px;
+      --glass: rgba(30, 41, 59, 0.8);
+      --glass-border: rgba(148, 163, 184, 0.1);
     }
 
     * {
@@ -37,127 +37,177 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--background) 0%, #0c1426 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 0 auto;
       padding: 2rem;
+      position: relative;
+      z-index: 1;
     }
 
     .header {
       text-align: center;
       margin-bottom: 3rem;
+      animation: slideDown 0.8s ease-out;
     }
 
     .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
     }
 
     .header p {
       color: var(--text-secondary);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: 400;
+      opacity: 0.9;
     }
 
-    .main-grid {
+    .main-layout {
       display: grid;
       grid-template-columns: 1fr 400px;
       gap: 2rem;
       align-items: start;
     }
 
-    .input-section {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
+    .input-panel {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      animation: slideUp 0.8s ease-out 0.2s both;
+      transition: all 0.3s ease;
     }
 
-    .section-title {
+    .input-panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .panel-title {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
+      gap: 1rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
       color: var(--text-primary);
     }
 
-    .section-title i {
-      color: var(--primary);
+    .panel-title i {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
       font-size: 1.1rem;
     }
 
-    .input-group {
-      margin-bottom: 1.5rem;
+    .form-group {
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease-out;
     }
 
-    .input-label {
+    .form-label {
       display: block;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.01em;
     }
 
-    .textarea-wrapper {
+    .textarea-container {
       position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      transition: all 0.3s ease;
     }
 
-    .kit-input {
+    .kit-textarea {
       width: 100%;
       min-height: 200px;
       background: var(--background);
       border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
+      border-radius: 16px;
+      padding: 1.5rem;
       color: var(--text-primary);
       font-family: 'JetBrains Mono', 'Courier New', monospace;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
       resize: vertical;
       transition: all 0.3s ease;
     }
 
-    .kit-input:focus {
+    .kit-textarea:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      transform: scale(1.01);
     }
 
-    .kit-input::placeholder {
+    .kit-textarea::placeholder {
       color: var(--text-muted);
+      opacity: 0.7;
     }
 
-    .price-input-group {
+    .price-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+    }
+
+    .price-input-wrapper {
       display: flex;
       align-items: center;
-      gap: 1rem;
       background: var(--background);
       border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.75rem 1rem;
+      border-radius: 16px;
+      padding: 1rem 1.5rem;
       transition: all 0.3s ease;
+      position: relative;
     }
 
-    .price-input-group:focus-within {
+    .price-input-wrapper:focus-within {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      transform: scale(1.01);
     }
 
-    .price-input-group i {
-      color: var(--text-muted);
+    .price-icon {
+      color: var(--accent);
+      font-size: 1.2rem;
+      margin-right: 1rem;
+      transition: all 0.3s ease;
     }
 
     .price-input {
@@ -165,8 +215,8 @@
       background: transparent;
       border: none;
       color: var(--text-primary);
-      font-size: 1rem;
-      font-weight: 500;
+      font-size: 1.1rem;
+      font-weight: 600;
     }
 
     .price-input:focus {
@@ -175,71 +225,62 @@
 
     .price-input::placeholder {
       color: var(--text-muted);
-    }
-
-    .controls {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: var(--radius);
-      font-weight: 500;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      box-shadow: var(--shadow);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-secondary {
-      background: var(--surface-light);
-      color: var(--text-secondary);
-      border: 1px solid var(--border-light);
-    }
-
-    .btn-secondary:hover {
-      background: var(--border-light);
-      color: var(--text-primary);
+      font-weight: 400;
     }
 
     .summary-panel {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2.5rem;
       position: sticky;
       top: 2rem;
+      animation: slideUp 0.8s ease-out 0.4s both;
+      transition: all 0.3s ease;
     }
 
-    .summary-stats {
+    .summary-panel:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .stats-grid {
       display: grid;
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
 
-    .stat-card {
+    .stat-item {
       background: var(--background);
-      border-radius: var(--radius);
-      padding: 1.5rem;
       border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-item:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
     .stat-label {
@@ -247,47 +288,73 @@
       font-size: 0.85rem;
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
       margin-bottom: 0.5rem;
     }
 
     .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 1.8rem;
+      font-weight: 800;
       color: var(--text-primary);
-    }
-
-    .stat-value.success {
-      color: var(--success);
+      transition: all 0.3s ease;
     }
 
     .stat-value.primary {
       color: var(--primary-light);
     }
 
-    .table-container {
-      grid-column: 1 / -1;
-      margin-top: 2rem;
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border);
+    .stat-value.success {
+      color: var(--success);
     }
 
-    .table-header {
-      background: var(--background);
-      padding: 1.5rem 2rem;
+    .stat-value.accent {
+      color: var(--accent);
+    }
+
+    .parts-section {
+      grid-column: 1 / -1;
+      margin-top: 3rem;
+      animation: slideUp 0.8s ease-out 0.6s both;
+    }
+
+    .parts-container {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .parts-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .parts-header {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface-light) 100%);
+      padding: 2rem 2.5rem;
       border-bottom: 1px solid var(--border);
     }
 
-    .table-header h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
+    .parts-header h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
+    }
+
+    .parts-header i {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--warning) 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
     }
 
     .parts-table {
@@ -299,28 +366,39 @@
       background: var(--surface-light);
       color: var(--text-secondary);
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 1rem;
+      padding: 1.5rem 1rem;
       text-align: left;
       border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .parts-table td {
-      padding: 1rem;
+      padding: 1.5rem 1rem;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
+      transition: all 0.3s ease;
+    }
+
+    .parts-table tr {
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.5s ease-out both;
     }
 
     .parts-table tr:hover {
-      background: rgba(37, 99, 235, 0.05);
+      background: rgba(59, 130, 246, 0.05);
+      transform: scale(1.01);
     }
 
     .part-description {
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-primary);
       max-width: 300px;
+      line-height: 1.4;
     }
 
     .part-number {
@@ -328,41 +406,46 @@
       font-size: 0.85rem;
       color: var(--text-muted);
       background: var(--background);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: inline-block;
     }
 
-    .table-input {
+    .input-field {
       background: var(--background);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 0.5rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem;
       color: var(--text-primary);
-      font-size: 0.9rem;
-      width: 80px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      width: 90px;
       text-align: center;
       transition: all 0.3s ease;
     }
 
-    .table-input:focus {
+    .input-field:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      transform: scale(1.05);
     }
 
-    .checkbox-wrapper {
+    .checkbox-container {
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .custom-checkbox {
+    .modern-checkbox {
       position: relative;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
     }
 
-    .custom-checkbox input {
+    .modern-checkbox input {
       opacity: 0;
       position: absolute;
       width: 100%;
@@ -370,69 +453,116 @@
       cursor: pointer;
     }
 
-    .checkmark {
+    .checkbox-mark {
       position: absolute;
       top: 0;
       left: 0;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       background: var(--background);
       border: 2px solid var(--border);
-      border-radius: 4px;
+      border-radius: 8px;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .custom-checkbox input:checked + .checkmark {
-      background: var(--primary);
+    .modern-checkbox input:checked + .checkbox-mark {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       border-color: var(--primary);
+      transform: scale(1.1);
     }
 
-    .checkmark:after {
+    .checkbox-mark::after {
       content: "";
       position: absolute;
-      display: none;
-      left: 6px;
-      top: 2px;
       width: 6px;
       height: 10px;
       border: solid white;
       border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
+      transform: rotate(45deg) scale(0);
+      transition: transform 0.2s ease;
     }
 
-    .custom-checkbox input:checked + .checkmark:after {
-      display: block;
+    .modern-checkbox input:checked + .checkbox-mark::after {
+      transform: rotate(45deg) scale(1);
     }
 
-    .refund-amount {
-      font-weight: 600;
+    .refund-value {
+      font-weight: 700;
       color: var(--success);
-      font-size: 0.95rem;
+      font-size: 1rem;
+      text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
     }
 
     .empty-state {
       text-align: center;
       padding: 4rem 2rem;
       color: var(--text-muted);
+      animation: fadeIn 0.8s ease-out;
     }
 
     .empty-state i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
       color: var(--border-light);
+      opacity: 0.5;
     }
 
     .empty-state h3 {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
       color: var(--text-secondary);
+      font-weight: 600;
     }
 
-    .fade-in {
-      animation: fadeIn 0.5s ease-out;
+    .empty-state p {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInUp {
       from {
         opacity: 0;
         transform: translateY(20px);
@@ -443,119 +573,185 @@
       }
     }
 
-    @media (max-width: 1024px) {
-      .main-grid {
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .bounce-in {
+      animation: bounceIn 0.6s ease-out;
+    }
+
+    @media (max-width: 1200px) {
+      .main-layout {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 2rem;
       }
 
       .summary-panel {
         position: static;
+        order: -1;
       }
 
-      .container {
-        padding: 1rem;
-      }
-
-      .header h1 {
-        font-size: 2rem;
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
     }
 
     @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .input-panel,
+      .summary-panel,
+      .parts-container {
+        padding: 1.5rem;
+        border-radius: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
       .parts-table {
         font-size: 0.85rem;
       }
 
       .parts-table th,
       .parts-table td {
-        padding: 0.75rem 0.5rem;
+        padding: 1rem 0.5rem;
       }
 
-      .controls {
-        flex-direction: column;
+      .input-field {
+        width: 70px;
+        padding: 0.5rem;
       }
+    }
 
-      .btn {
-        justify-content: center;
-      }
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .notification {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      transform: translateX(400px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .notification.error {
+      border-left: 4px solid var(--error);
     }
   </style>
 </head>
 <body>
+  <div class="background-pattern"></div>
+  
   <div class="container">
     <div class="header">
       <h1>Detroit Axle Kit Calculator</h1>
-      <p>Calculate refunds for returned automotive parts with precision</p>
+      <p>Advanced refund calculations with real-time processing</p>
     </div>
 
-    <div class="main-grid">
-      <div class="input-section">
-        <h2 class="section-title">
+    <div class="main-layout">
+      <div class="input-panel">
+        <h2 class="panel-title">
           <i class="fas fa-clipboard-list"></i>
           Kit Components
         </h2>
         
-        <div class="input-group">
-          <label class="input-label" for="kitInput">
-            Paste your kit component list below
+        <div class="form-group">
+          <label class="form-label" for="kitInput">
+            Component List
           </label>
-          <div class="textarea-wrapper">
+          <div class="textarea-container">
             <textarea 
               id="kitInput" 
-              class="kit-input" 
-              placeholder="Example:&#10;2x Front Brake Rotors - ABC123&#10;1x Brake Pad Set (Pair) - DEF456&#10;4x Wheel Bolts - GHI789"
+              class="kit-textarea" 
+              placeholder="Example:&#10;2x Front Brake Rotors - ABC123&#10;1x Brake Pad Set (Pair) - DEF456&#10;4x Wheel Bolts - GHI789&#10;&#10;Paste your kit components here..."
             ></textarea>
           </div>
         </div>
 
-        <div class="input-group">
-          <label class="input-label" for="kitPrice">
-            Full Kit Price
+        <div class="form-group">
+          <label class="form-label" for="kitPrice">
+            Total Kit Price
           </label>
-          <div class="price-input-group">
-            <i class="fas fa-dollar-sign"></i>
-            <input 
-              type="number" 
-              id="kitPrice" 
-              class="price-input" 
-              placeholder="Enter total kit price"
-              step="0.01"
-              min="0"
-            >
+          <div class="price-container">
+            <div class="price-input-wrapper">
+              <i class="fas fa-dollar-sign price-icon"></i>
+              <input 
+                type="number" 
+                id="kitPrice" 
+                class="price-input" 
+                placeholder="Enter total kit price"
+                step="0.01"
+                min="0"
+              >
+            </div>
           </div>
-        </div>
-
-        <div class="controls">
-          <button class="btn btn-primary" onclick="calculateRefunds()">
-            <i class="fas fa-calculator"></i>
-            Calculate Refunds
-          </button>
-          <button class="btn btn-secondary" onclick="clearAll()">
-            <i class="fas fa-trash"></i>
-            Clear All
-          </button>
         </div>
       </div>
 
       <div class="summary-panel">
-        <h2 class="section-title">
-          <i class="fas fa-chart-line"></i>
-          Summary
+        <h2 class="panel-title">
+          <i class="fas fa-chart-pie"></i>
+          Live Summary
         </h2>
         
-        <div class="summary-stats">
-          <div class="stat-card">
+        <div class="stats-grid">
+          <div class="stat-item">
             <div class="stat-label">Total Parts</div>
-            <div class="stat-value" id="totalParts">0</div>
+            <div class="stat-value accent" id="totalParts">0</div>
           </div>
           
-          <div class="stat-card">
+          <div class="stat-item">
             <div class="stat-label">Kit Value</div>
             <div class="stat-value primary" id="kitValue">$0.00</div>
           </div>
           
-          <div class="stat-card">
+          <div class="stat-item">
             <div class="stat-label">Total Refund</div>
             <div class="stat-value success" id="totalRefund">$0.00</div>
           </div>
@@ -563,224 +759,322 @@
       </div>
     </div>
 
-    <div class="table-container" id="tableContainer">
-      <div class="empty-state">
-        <i class="fas fa-box-open"></i>
-        <h3>No parts loaded</h3>
-        <p>Paste your kit component list above to get started</p>
+    <div class="parts-section">
+      <div class="parts-container" id="partsContainer">
+        <div class="empty-state">
+          <i class="fas fa-box-open pulse-animation"></i>
+          <h3>Ready for Input</h3>
+          <p>Paste your kit component list above to begin calculating refunds</p>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const knownSingleItems = ["brake pads", "brake rotors", "brake pad"];
-    let currentParts = [];
-
-    document.getElementById("kitInput").addEventListener("input", processInput);
-    document.getElementById("kitPrice").addEventListener("input", calculateRefunds);
-
-    function normalizeQuantity(desc, qty) {
-      const descLower = desc.toLowerCase();
-      if (knownSingleItems.some(part => descLower.includes(part))) {
-        return 1;
-      }
-      if (descLower.includes("(pair)") && qty == 1) {
-        return 2;
-      }
-      return qty;
-    }
-
-    function processInput() {
-      const input = document.getElementById("kitInput").value.trim();
-      if (!input) {
-        currentParts = [];
-        renderEmptyState();
-        updateSummary();
-        return;
+    class KitCalculator {
+      constructor() {
+        this.parts = [];
+        this.knownSingleItems = ["brake pads", "brake rotors", "brake pad", "rotor", "pads"];
+        this.animationDelay = 0;
+        this.init();
       }
 
-      const lines = input.split(/\n+/);
-      currentParts = [];
+      init() {
+        this.bindEvents();
+        this.updateSummary();
+      }
 
-      const lineRegex = /^(\d+)x?\s+(.*?)\s*(?:-\s*([A-Z0-9-]+))?$/i;
-      
-      lines.forEach(line => {
-        const trimmedLine = line.trim();
-        if (!trimmedLine) return;
+      bindEvents() {
+        const kitInput = document.getElementById("kitInput");
+        const kitPrice = document.getElementById("kitPrice");
+
+        kitInput.addEventListener("input", this.debounce(() => this.processInput(), 300));
+        kitPrice.addEventListener("input", this.debounce(() => this.calculateRefunds(), 200));
+      }
+
+      debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      normalizeQuantity(description, quantity) {
+        const descLower = description.toLowerCase();
+        if (this.knownSingleItems.some(item => descLower.includes(item))) {
+          return 1;
+        }
+        if (descLower.includes("(pair)") && quantity === 1) {
+          return 2;
+        }
+        return quantity;
+      }
+
+      processInput() {
+        const input = document.getElementById("kitInput").value.trim();
         
-        const match = lineRegex.exec(trimmedLine);
-        if (match) {
-          let qty = parseInt(match[1]);
-          let desc = match[2].trim();
-          let partNum = match[3] || "";
+        if (!input) {
+          this.parts = [];
+          this.renderEmptyState();
+          this.updateSummary();
+          return;
+        }
+
+        const lines = input.split(/\n+/).filter(line => line.trim());
+        this.parts = [];
+        this.animationDelay = 0;
+
+        const lineRegex = /^(\d+)x?\s+(.*?)\s*(?:-\s*([A-Z0-9-]+))?$/i;
+        
+        lines.forEach(line => {
+          const trimmedLine = line.trim();
+          if (!trimmedLine) return;
           
-          qty = normalizeQuantity(desc, qty);
-          currentParts.push({ 
-            qty, 
-            desc, 
-            partNum, 
-            price: 0, 
-            returned: 0,
-            isReturned: false
-          });
+          const match = lineRegex.exec(trimmedLine);
+          if (match) {
+            let qty = parseInt(match[1]);
+            let desc = match[2].trim();
+            let partNum = match[3] || "";
+            
+            qty = this.normalizeQuantity(desc, qty);
+            this.parts.push({ 
+              qty, 
+              desc, 
+              partNum, 
+              price: 0, 
+              returned: 0,
+              isReturned: false
+            });
+          }
+        });
+
+        if (this.parts.length > 0) {
+          this.renderTable();
+          this.showNotification("Parts loaded successfully!", "success");
+        } else {
+          this.renderEmptyState();
         }
-      });
-
-      if (currentParts.length > 0) {
-        renderTable();
-      } else {
-        renderEmptyState();
-      }
-      
-      updateSummary();
-    }
-
-    function renderEmptyState() {
-      document.getElementById("tableContainer").innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-box-open"></i>
-          <h3>No parts loaded</h3>
-          <p>Paste your kit component list above to get started</p>
-        </div>
-      `;
-    }
-
-    function renderTable() {
-      let tableHTML = `
-        <div class="table-header">
-          <h3><i class="fas fa-cogs"></i> Parts Breakdown</h3>
-        </div>
-        <table class="parts-table">
-          <thead>
-            <tr>
-              <th>Qty</th>
-              <th>Description</th>
-              <th>Part Number</th>
-              <th>Unit Price</th>
-              <th>Returned</th>
-              <th>Refund</th>
-              <th>Return</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      currentParts.forEach((part, index) => {
-        tableHTML += `
-          <tr>
-            <td>
-              <input type="number" class="table-input" value="${part.qty}" 
-                     onchange="updatePart(${index}, 'qty', this.value)" min="0">
-            </td>
-            <td class="part-description">${part.desc}</td>
-            <td>
-              ${part.partNum ? `<span class="part-number">${part.partNum}</span>` : '-'}
-            </td>
-            <td>
-              <input type="number" class="table-input" placeholder="0.00" 
-                     onchange="updatePart(${index}, 'price', this.value)" 
-                     step="0.01" min="0" style="width: 100px;">
-            </td>
-            <td>
-              <input type="number" class="table-input" value="${part.returned}" 
-                     onchange="updatePart(${index}, 'returned', this.value)" 
-                     min="0" max="${part.qty}">
-            </td>
-            <td class="refund-amount" id="refund-${index}">$0.00</td>
-            <td>
-              <div class="checkbox-wrapper">
-                <label class="custom-checkbox">
-                  <input type="checkbox" onchange="toggleReturn(${index})" 
-                         ${part.isReturned ? 'checked' : ''}>
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-            </td>
-          </tr>
-        `;
-      });
-
-      tableHTML += `</tbody></table>`;
-      
-      const container = document.getElementById("tableContainer");
-      container.innerHTML = tableHTML;
-      container.classList.add('fade-in');
-      
-      calculateRefunds();
-    }
-
-    function updatePart(index, field, value) {
-      const numValue = parseFloat(value) || 0;
-      currentParts[index][field] = numValue;
-      
-      if (field === 'returned') {
-        const maxReturned = currentParts[index].qty;
-        if (numValue > maxReturned) {
-          currentParts[index].returned = maxReturned;
-          event.target.value = maxReturned;
-        }
-      }
-      
-      calculateRefunds();
-    }
-
-    function toggleReturn(index) {
-      const checkbox = event.target;
-      const returnedInput = checkbox.closest('tr').querySelector('input[type="number"]:nth-of-type(3)');
-      
-      if (checkbox.checked) {
-        const qty = currentParts[index].qty;
-        currentParts[index].returned = qty;
-        currentParts[index].isReturned = true;
-        returnedInput.value = qty;
-      } else {
-        currentParts[index].returned = 0;
-        currentParts[index].isReturned = false;
-        returnedInput.value = 0;
-      }
-      
-      calculateRefunds();
-    }
-
-    function calculateRefunds() {
-      if (currentParts.length === 0) return;
-
-      const totalUndiscounted = currentParts.reduce((sum, p) => sum + (p.qty * p.price), 0);
-      const kitPrice = parseFloat(document.getElementById("kitPrice").value) || totalUndiscounted;
-      const discountFactor = totalUndiscounted > 0 ? (kitPrice / totalUndiscounted) : 1;
-
-      let totalRefund = 0;
-
-      currentParts.forEach((part, index) => {
-        const discountedPrice = part.price * discountFactor;
-        const refund = Math.min(part.returned, part.qty) * discountedPrice;
-        totalRefund += refund;
         
-        const refundElement = document.getElementById(`refund-${index}`);
-        if (refundElement) {
-          refundElement.textContent = `$${refund.toFixed(2)}`;
+        this.updateSummary();
+      }
+
+      renderEmptyState() {
+        document.getElementById("partsContainer").innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open pulse-animation"></i>
+            <h3>Ready for Input</h3>
+            <p>Paste your kit component list above to begin calculating refunds</p>
+          </div>
+        `;
+      }
+
+      renderTable() {
+        let tableHTML = `
+          <div class="parts-header">
+            <h3><i class="fas fa-cogs"></i> Parts Breakdown</h3>
+          </div>
+          <table class="parts-table">
+            <thead>
+              <tr>
+                <th>Qty</th>
+                <th>Description</th>
+                <th>Part Number</th>
+                <th>Unit Price</th>
+                <th>Returned</th>
+                <th>Refund</th>
+                <th>Return All</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        this.parts.forEach((part, index) => {
+          tableHTML += `
+            <tr style="animation-delay: ${this.animationDelay}ms">
+              <td>
+                <input type="number" class="input-field" value="${part.qty}" 
+                       onchange="calculator.updatePart(${index}, 'qty', this.value)" min="0">
+              </td>
+              <td class="part-description">${part.desc}</td>
+              <td>
+                ${part.partNum ? `<span class="part-number">${part.partNum}</span>` : '<span style="color: var(--text-muted);">—</span>'}
+              </td>
+              <td>
+                <input type="number" class="input-field" placeholder="0.00" 
+                       onchange="calculator.updatePart(${index}, 'price', this.value)" 
+                       step="0.01" min="0" style="width: 100px;">
+              </td>
+              <td>
+                <input type="number" class="input-field" value="${part.returned}" 
+                       onchange="calculator.updatePart(${index}, 'returned', this.value)" 
+                       min="0" max="${part.qty}">
+              </td>
+              <td class="refund-value" id="refund-${index}">$0.00</td>
+              <td>
+                <div class="checkbox-container">
+                  <label class="modern-checkbox">
+                    <input type="checkbox" onchange="calculator.toggleReturn(${index})" 
+                           ${part.isReturned ? 'checked' : ''}>
+                    <span class="checkbox-mark"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+          `;
+          this.animationDelay += 100;
+        });
+
+        tableHTML += `</tbody></table>`;
+        
+        const container = document.getElementById("partsContainer");
+        container.innerHTML = tableHTML;
+        container.classList.add('bounce-in');
+        
+        setTimeout(() => container.classList.remove('bounce-in'), 600);
+        
+        this.calculateRefunds();
+      }
+
+      updatePart(index, field, value) {
+        const numValue = parseFloat(value) || 0;
+        this.parts[index][field] = numValue;
+        
+        if (field === 'returned') {
+          const maxReturned = this.parts[index].qty;
+          if (numValue > maxReturned) {
+            this.parts[index].returned = maxReturned;
+            event.target.value = maxReturned;
+          }
         }
+        
+        this.calculateRefunds();
+        this.animateStatUpdate();
+      }
+
+      toggleReturn(index) {
+        const checkbox = event.target;
+        const row = checkbox.closest('tr');
+        const returnedInput = row.querySelector('input[type="number"]:nth-of-type(3)');
+        
+        if (checkbox.checked) {
+          const qty = this.parts[index].qty;
+          this.parts[index].returned = qty;
+          this.parts[index].isReturned = true;
+          returnedInput.value = qty;
+          
+          // Animate the row
+          row.style.transform = 'scale(1.02)';
+          row.style.background = 'rgba(16, 185, 129, 0.1)';
+          setTimeout(() => {
+            row.style.transform = '';
+            row.style.background = '';
+          }, 300);
+        } else {
+          this.parts[index].returned = 0;
+          this.parts[index].isReturned = false;
+          returnedInput.value = 0;
+        }
+        
+        this.calculateRefunds();
+        this.animateStatUpdate();
+      }
+
+      calculateRefunds() {
+        if (this.parts.length === 0) return;
+
+        const totalUndiscounted = this.parts.reduce((sum, p) => sum + (p.qty * p.price), 0);
+        const kitPrice = parseFloat(document.getElementById("kitPrice").value) || totalUndiscounted;
+        const discountFactor = totalUndiscounted > 0 ? (kitPrice / totalUndiscounted) : 1;
+
+        let totalRefund = 0;
+
+        this.parts.forEach((part, index) => {
+          const discountedPrice = part.price * discountFactor;
+          const refund = Math.min(part.returned, part.qty) * discountedPrice;
+          totalRefund += refund;
+          
+          const refundElement = document.getElementById(`refund-${index}`);
+          if (refundElement) {
+            refundElement.textContent = `$${refund.toFixed(2)}`;
+            
+            // Animate refund value change
+            if (refund > 0) {
+              refundElement.style.transform = 'scale(1.1)';
+              setTimeout(() => {
+                refundElement.style.transform = '';
+              }, 200);
+            }
+          }
+        });
+
+        this.updateSummary(totalRefund, kitPrice);
+      }
+
+      updateSummary(totalRefund = 0, kitValue = 0) {
+        const totalPartsEl = document.getElementById("totalParts");
+        const kitValueEl = document.getElementById("kitValue");
+        const totalRefundEl = document.getElementById("totalRefund");
+
+        totalPartsEl.textContent = this.parts.length;
+        kitValueEl.textContent = `$${kitValue.toFixed(2)}`;
+        totalRefundEl.textContent = `$${totalRefund.toFixed(2)}`;
+      }
+
+      animateStatUpdate() {
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(stat => {
+          stat.style.transform = 'scale(1.05)';
+          setTimeout(() => {
+            stat.style.transform = '';
+          }, 200);
+        });
+      }
+
+      showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => document.body.removeChild(notification), 300);
+        }, 3000);
+      }
+    }
+
+    // Initialize the calculator
+    const calculator = new KitCalculator();
+
+    // Add some interactive enhancements
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add hover effects to input fields
+      const inputs = document.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'scale(1.02)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.style.transform = '';
+        });
       });
 
-      updateSummary(totalRefund, kitPrice);
-    }
-
-    function updateSummary(totalRefund = 0, kitValue = 0) {
-      document.getElementById("totalParts").textContent = currentParts.length;
-      document.getElementById("kitValue").textContent = `$${kitValue.toFixed(2)}`;
-      document.getElementById("totalRefund").textContent = `$${totalRefund.toFixed(2)}`;
-    }
-
-    function clearAll() {
-      document.getElementById("kitInput").value = "";
-      document.getElementById("kitPrice").value = "";
-      currentParts = [];
-      renderEmptyState();
-      updateSummary();
-    }
-
-    // Initialize
-    updateSummary();
+      // Add keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') {
+          calculator.processInput();
+        }
+      });
+    });
   </script>
 </body>
 </html>
