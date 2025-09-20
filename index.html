@@ -515,7 +515,7 @@
               <td>
                 <div class="checkbox-container">
                   <div class="modern-checkbox ${part.isReturned ? 'checked' : ''}" 
-                       onclick="calculator.toggleReturn(${index})"></div>
+                       onclick="calculator.toggleReturn(${index}, this)"></div>
                 </div>
               </td>
             </tr>
@@ -542,27 +542,25 @@
         this.calculateRefunds();
       }
 
-      toggleReturn(index) {
-        const checkbox = event.target;
-        
+      toggleReturn(index, checkboxElement) {
         if (this.parts[index].isReturned) {
           this.parts[index].returned = 0;
           this.parts[index].isReturned = false;
-          checkbox.classList.remove('checked');
+          checkboxElement.classList.remove('checked');
           
           // Update the returned input field
-          const row = checkbox.closest('tr');
-          const returnedInput = row.querySelector('input[type="number"]:nth-of-type(2)');
+          const row = checkboxElement.closest('tr');
+          const returnedInput = row.querySelectorAll('input[type="number"]')[1];
           returnedInput.value = 0;
         } else {
           const qty = this.parts[index].qty;
           this.parts[index].returned = qty;
           this.parts[index].isReturned = true;
-          checkbox.classList.add('checked');
+          checkboxElement.classList.add('checked');
           
           // Update the returned input field
-          const row = checkbox.closest('tr');
-          const returnedInput = row.querySelector('input[type="number"]:nth-of-type(2)');
+          const row = checkboxElement.closest('tr');
+          const returnedInput = row.querySelectorAll('input[type="number"]')[1];
           returnedInput.value = qty;
         }
         
