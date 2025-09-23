@@ -2,36 +2,682 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detroit Axle Kit Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
-    table { border-collapse: collapse; width: 100%; background: #fff; box-shadow: 0 0 10px #eee; }
-    th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: center; }
-    th { background: #eee; }
-    .input-field { width: 70px; padding: 4px; font-size: 1em; }
-    .checkbox-container { display: flex; align-items: center; justify-content: center; }
-    .refund-value { font-weight: 600; color: green; }
+    :root {
+      --primary: #ff7b25;
+      --primary-dark: #e55a00;
+      --primary-light: #ff9d5c;
+      --secondary: #ff5722;
+      --accent: #ff9800;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --error: #f44336;
+      --background: #121212;
+      --surface: #1e1e1e;
+      --surface-light: #2a2a2a;
+      --surface-hover: #333333;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --text-muted: #757575;
+      --border: #333333;
+      --border-light: #404040;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--background);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-section {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .input-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .input-title i {
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .kit-textarea {
+      width: 100%;
+      min-height: 250px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      resize: vertical;
+      transition: all 0.2s ease;
+    }
+
+    .kit-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(255, 123, 37, 0.2);
+    }
+
+    .price-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .price-input-wrapper:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(255, 123, 37, 0.2);
+    }
+
+    .price-icon {
+      color: var(--accent);
+      margin-right: 0.75rem;
+    }
+
+    .price-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .price-input:focus {
+      outline: none;
+    }
+
+    .summary-section {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-item {
+      background: var(--surface-light);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      border-left: 3px solid var(--primary);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-value.primary {
+      color: var(--primary);
+    }
+
+    .stat-value.success {
+      color: var(--success);
+    }
+
+    .parts-section {
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .parts-header {
+      background: var(--surface-light);
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .parts-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .parts-header i {
+      color: var(--accent);
+    }
+
+    .parts-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .parts-table th {
+      background: var(--surface-light);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .parts-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .parts-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .parts-table tr:hover {
+      background: rgba(255, 123, 37, 0.05);
+    }
+
+    .part-description {
+      font-weight: 500;
+      color: var(--text-primary);
+      max-width: 250px;
+    }
+
+    .part-number {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: var(--background);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .input-field {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      width: 80px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(255, 123, 37, 0.2);
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modern-checkbox {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .modern-checkbox input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .checkbox-mark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modern-checkbox input:checked + .checkbox-mark {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .checkbox-mark::after {
+      content: "";
+      position: absolute;
+      width: 5px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) scale(0);
+      transition: transform 0.2s ease;
+    }
+
+    .modern-checkbox input:checked + .checkbox-mark::after {
+      transform: rotate(45deg) scale(1);
+    }
+
+    .refund-value {
+      font-weight: 600;
+      color: var(--success);
+      font-size: 0.95rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--border-light);
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .empty-state p {
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .notification {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      transform: translateX(400px);
+      transition: all 0.2s ease;
+      z-index: 1000;
+      border-left: 3px solid var(--primary);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      border-left-color: var(--success);
+    }
+
+    .notification.error {
+      border-left-color: var(--error);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
   </style>
 </head>
 <body>
-  <h2>Detroit Axle Kit Calculator</h2>
-  <div id="partsContainer"></div>
+  <div class="container">
+    <div class="header">
+      <h1>Detroit Axle Kit Calculator</h1>
+      <p>Calculate refunds for returned kit components</p>
+    </div>
+
+    <div class="main-content">
+      <div class="input-section">
+        <h2 class="input-title">
+          <i class="fas fa-clipboard-list"></i>
+          Kit Components
+        </h2>
+        
+        <div class="form-group">
+          <label class="form-label" for="kitInput">
+            Paste your kit component list below:
+          </label>
+          <textarea 
+            id="kitInput" 
+            class="kit-textarea" 
+            placeholder="Example:&#10;2x Front Brake Rotors - ABC123&#10;1x Brake Pad Set (Pair) - DEF456&#10;4x Wheel Bolts - GHI789&#10;&#10;Supports Detroit Axle, Amazon, and eBay formats"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="kitPrice">
+            Total Kit Price ($)
+          </label>
+          <div class="price-input-wrapper">
+            <i class="fas fa-dollar-sign price-icon"></i>
+            <input 
+              type="number" 
+              id="kitPrice" 
+              class="price-input" 
+              placeholder="Enter total kit price"
+              step="0.01"
+              min="0"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-section">
+        <h2 class="input-title">
+          <i class="fas fa-chart-pie"></i>
+          Summary
+        </h2>
+        
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Total Parts</div>
+            <div class="stat-value" id="totalParts">0</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-label">Kit Value</div>
+            <div class="stat-value primary" id="kitValue">$0.00</div>
+          </div>
+          
+          <div class="stat-item">
+            <div class="stat-label">Total Refund</div>
+            <div class="stat-value success" id="totalRefund">$0.00</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 0.5rem;"></i>
+            Brake pads, rotors, shoes, and drums are automatically adjusted to count as 1 unit per set
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="parts-section" id="partsContainer">
+      <div class="empty-state">
+        <i class="fas fa-box-open"></i>
+        <h3>Ready for Input</h3>
+        <p>Paste your kit component list above to begin calculating refunds</p>
+      </div>
+    </div>
+  </div>
 
   <script>
-    class Calculator {
-      constructor(parts) {
-        this.parts = parts;
-        this.renderPartsTable();
+    class KitCalculator {
+      constructor() {
+        this.parts = [];
+        // Updated to include brake shoes and drums
+        this.knownSingleItems = [
+          "brake pads", "brake rotors", "brake shoes", "brake drums",
+          "brake pad", "rotor", "pads", "shoes", "drums"
+        ];
+        this.init();
       }
 
-      renderPartsTable() {
+      init() {
+        this.bindEvents();
+        this.updateSummary();
+      }
+
+      bindEvents() {
+        const kitInput = document.getElementById("kitInput");
+        const kitPrice = document.getElementById("kitPrice");
+
+        kitInput.addEventListener("input", this.debounce(() => this.processInput(), 300));
+        kitPrice.addEventListener("input", this.debounce(() => this.calculateRefunds(), 200));
+      }
+
+      debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      normalizeQuantity(description, quantity, partNumber) {
+        const descLower = description.toLowerCase();
+        
+        // Handle brake pads, rotors, shoes, and drums - always count as 1 unit
+        if (this.knownSingleItems.some(item => descLower.includes(item))) {
+          return 1;
+        }
+        
+        // Handle items with (Pair) in description
+        if (descLower.includes("(pair)") && quantity === 1) {
+          return 2;
+        }
+        
+        // Handle part numbers ending with x2 (indicating a pair)
+        if (partNumber && partNumber.toLowerCase().endsWith('x2') && quantity === 1) {
+          return 2;
+        }
+        
+        return quantity;
+      }
+
+      processInput() {
+        const input = document.getElementById("kitInput").value.trim();
+        
+        if (!input) {
+          this.parts = [];
+          this.renderEmptyState();
+          this.updateSummary();
+          return;
+        }
+
+        const lines = input.split(/\n+/).filter(line => line.trim());
+        this.parts = [];
+
+        // Try different parsing patterns for different platforms
+        lines.forEach(line => {
+          const trimmedLine = line.trim();
+          if (!trimmedLine) return;
+          
+          let qty = 1;
+          let desc = "";
+          let partNum = "";
+          
+          // Pattern 1: Detroit Axle format (tab separated)
+          if (trimmedLine.includes('\t')) {
+            const parts = trimmedLine.split('\t');
+            if (parts.length >= 3) {
+              qty = parseInt(parts[0]) || 1;
+              desc = parts[1].trim();
+              partNum = parts[2].trim();
+            }
+          } 
+          // Pattern 2: Amazon/eBay format (2x Description - PartNumber)
+          else if (trimmedLine.includes('x') && (trimmedLine.includes('-') || trimmedLine.includes(':'))) {
+            const xIndex = trimmedLine.indexOf('x');
+            const separatorIndex = Math.max(
+              trimmedLine.indexOf(' - '),
+              trimmedLine.indexOf(': ')
+            );
+            
+            if (xIndex > 0 && separatorIndex > xIndex) {
+              qty = parseInt(trimmedLine.substring(0, xIndex)) || 1;
+              desc = trimmedLine.substring(xIndex + 1, separatorIndex).trim();
+              partNum = trimmedLine.substring(separatorIndex + 2).trim();
+            }
+          }
+          // Pattern 3: Simple format (Qty Description PartNumber)
+          else {
+            const words = trimmedLine.split(/\s+/);
+            const firstWord = words[0];
+            
+            // Check if first word is a number (quantity)
+            if (!isNaN(firstWord)) {
+              qty = parseInt(firstWord);
+              desc = words.slice(1, -1).join(' ');
+              partNum = words[words.length - 1];
+            } else {
+              desc = trimmedLine;
+            }
+          }
+          
+          // Normalize quantity based on description and part number
+          qty = this.normalizeQuantity(desc, qty, partNum);
+          
+          this.parts.push({ 
+            qty, 
+            desc, 
+            partNum, 
+            price: 0, 
+            returned: 0,
+            isReturned: false
+          });
+        });
+
+        if (this.parts.length > 0) {
+          this.renderTable();
+          this.showNotification("Parts loaded successfully!", "success");
+        } else {
+          this.renderEmptyState();
+        }
+        
+        this.updateSummary();
+      }
+
+      renderEmptyState() {
+        document.getElementById("partsContainer").innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-box-open"></i>
+            <h3>Ready for Input</h3>
+            <p>Paste your kit component list above to begin calculating refunds</p>
+          </div>
+        `;
+      }
+
+      renderTable() {
         let tableHTML = `
-          <table>
+          <div class="parts-header">
+            <h3><i class="fas fa-cogs"></i> Parts Breakdown</h3>
+          </div>
+          <table class="parts-table">
             <thead>
               <tr>
                 <th>Qty</th>
                 <th>Description</th>
-                <th>Part #</th>
+                <th>Part Number</th>
                 <th>Unit Price</th>
                 <th>Returned</th>
                 <th>Refund</th>
@@ -43,108 +689,131 @@
 
         this.parts.forEach((part, index) => {
           tableHTML += `
-            <tr data-index="${index}">
-              <td><input type="number" class="input-field qty-input" value="${part.qty}" min="0"></td>
-              <td>${part.desc}</td>
-              <td>${part.partNum ? part.partNum : '—'}</td>
-              <td><input type="number" class="input-field price-input" value="${part.price}" min="0" step="0.01"></td>
+            <tr class="fade-in">
               <td>
-                <input type="number" class="input-field returned-input" value="${part.returned}" min="0" max="${part.qty}">
+                <input type="number" class="input-field" value="${part.qty}" 
+                       onchange="calculator.updatePart(${index}, 'qty', this.value)" min="0">
               </td>
-              <td class="refund-value">$0.00</td>
-              <td class="checkbox-container">
-                <input type="checkbox" class="returned-checkbox" ${part.isReturned ? 'checked' : ''}>
+              <td class="part-description">${part.desc}</td>
+              <td>
+                ${part.partNum ? `<span class="part-number">${part.partNum}</span>` : '<span style="color: var(--text-muted);">—</span>'}
+              </td>
+              <td>
+                <input type="number" class="input-field" placeholder="0.00" 
+                       onchange="calculator.updatePart(${index}, 'price', this.value)" 
+                       step="0.01" min="0">
+              </td>
+              <td>
+                <input type="number" class="input-field" value="${part.returned}" 
+                       onchange="calculator.updatePart(${index}, 'returned', this.value)" 
+                       min="0" max="${part.qty}">
+              </td>
+              <td class="refund-value" id="refund-${index}">$0.00</td>
+              <td>
+                <div class="checkbox-container">
+                  <label class="modern-checkbox">
+                    <input type="checkbox" onchange="calculator.toggleReturn(${index})" 
+                           ${part.isReturned ? 'checked' : ''}>
+                    <span class="checkbox-mark"></span>
+                  </label>
+                </div>
               </td>
             </tr>
           `;
         });
 
         tableHTML += `</tbody></table>`;
-        document.getElementById("partsContainer").innerHTML = tableHTML;
-        this.attachEvents();
+        
+        const container = document.getElementById("partsContainer");
+        container.innerHTML = tableHTML;
+        
         this.calculateRefunds();
       }
 
-      attachEvents() {
-        const rows = document.querySelectorAll("#partsContainer tbody tr");
-        rows.forEach(row => {
-          const index = Number(row.getAttribute("data-index"));
-          const returnedInput = row.querySelector('.returned-input');
-          const checkbox = row.querySelector('.returned-checkbox');
-          const qtyInput = row.querySelector('.qty-input');
-          const priceInput = row.querySelector('.price-input');
+      updatePart(index, field, value) {
+        const numValue = parseFloat(value) || 0;
+        this.parts[index][field] = numValue;
+        
+        if (field === 'returned') {
+          const maxReturned = this.parts[index].qty;
+          if (numValue > maxReturned) {
+            this.parts[index].returned = maxReturned;
+            event.target.value = maxReturned;
+          }
+        }
+        
+        this.calculateRefunds();
+      }
 
-          // Qty change updates max for returned
-          qtyInput.addEventListener('input', () => {
-            const newQty = parseInt(qtyInput.value) || 0;
-            this.parts[index].qty = newQty;
-            returnedInput.max = newQty;
-            if (parseInt(returnedInput.value) > newQty) returnedInput.value = newQty;
-            this.calculateRefunds();
-          });
-
-          // Price change
-          priceInput.addEventListener('input', () => {
-            this.parts[index].price = parseFloat(priceInput.value) || 0;
-            this.calculateRefunds();
-          });
-
-          // Returned input logic
-          returnedInput.addEventListener('input', () => {
-            let val = parseInt(returnedInput.value) || 0;
-            const max = parseInt(returnedInput.max);
-            if (val > max) val = max;
-            if (val < 0) val = 0;
-            this.parts[index].returned = val;
-
-            if (val === max) {
-              checkbox.checked = true;
-              this.parts[index].isReturned = true;
-            } else if (val === 0) {
-              checkbox.checked = false;
-              this.parts[index].isReturned = false;
-            } else {
-              checkbox.checked = false;
-              this.parts[index].isReturned = false;
-            }
-            this.calculateRefunds();
-          });
-
-          // Checkbox logic
-          checkbox.addEventListener('change', () => {
-            if (checkbox.checked) {
-              returnedInput.value = this.parts[index].qty;
-              this.parts[index].returned = this.parts[index].qty;
-              this.parts[index].isReturned = true;
-            } else {
-              returnedInput.value = 0;
-              this.parts[index].returned = 0;
-              this.parts[index].isReturned = false;
-            }
-            this.calculateRefunds();
-          });
-        });
+      toggleReturn(index) {
+        const checkbox = event.target;
+        const returnedInput = checkbox.closest('tr').querySelector('input[type="number"]:nth-of-type(3)');
+        
+        if (checkbox.checked) {
+          const qty = this.parts[index].qty;
+          this.parts[index].returned = qty;
+          this.parts[index].isReturned = true;
+          returnedInput.value = qty;
+        } else {
+          this.parts[index].returned = 0;
+          this.parts[index].isReturned = false;
+          returnedInput.value = 0;
+        }
+        
+        this.calculateRefunds();
       }
 
       calculateRefunds() {
-        const rows = document.querySelectorAll("#partsContainer tbody tr");
-        this.parts.forEach((part, idx) => {
-          const refundCell = rows[idx].querySelector('.refund-value');
-          const refunded = Math.min(part.returned, part.qty) * part.price;
-          refundCell.textContent = `$${refunded.toFixed(2)}`;
+        if (this.parts.length === 0) return;
+
+        const totalUndiscounted = this.parts.reduce((sum, p) => sum + (p.qty * p.price), 0);
+        const kitPrice = parseFloat(document.getElementById("kitPrice").value) || totalUndiscounted;
+        const discountFactor = totalUndiscounted > 0 ? (kitPrice / totalUndiscounted) : 1;
+
+        let totalRefund = 0;
+
+        this.parts.forEach((part, index) => {
+          const discountedPrice = part.price * discountFactor;
+          const refund = Math.min(part.returned, part.qty) * discountedPrice;
+          totalRefund += refund;
+          
+          const refundElement = document.getElementById(`refund-${index}`);
+          if (refundElement) {
+            refundElement.textContent = `$${refund.toFixed(2)}`;
+          }
         });
+
+        this.updateSummary(totalRefund, kitPrice);
+      }
+
+      updateSummary(totalRefund = 0, kitValue = 0) {
+        const totalPartsEl = document.getElementById("totalParts");
+        const kitValueEl = document.getElementById("kitValue");
+        const totalRefundEl = document.getElementById("totalRefund");
+
+        totalPartsEl.textContent = this.parts.length;
+        kitValueEl.textContent = `$${kitValue.toFixed(2)}`;
+        totalRefundEl.textContent = `$${totalRefund.toFixed(2)}`;
+      }
+
+      showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => document.body.removeChild(notification), 300);
+        }, 3000);
       }
     }
 
-    // Example data
-    const parts = [
-      { qty: 5, desc: "Brake Pads", partNum: "BP123", price: 20.00, returned: 0, isReturned: false },
-      { qty: 2, desc: "Rotors", partNum: "RT456", price: 45.00, returned: 0, isReturned: false },
-      { qty: 1, desc: "Caliper", partNum: "CL789", price: 70.00, returned: 0, isReturned: false }
-    ];
-
-    // Initialize calculator
-    new Calculator(parts);
+    // Initialize the calculator
+    const calculator = new KitCalculator();
   </script>
 </body>
 </html>
