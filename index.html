@@ -299,6 +299,14 @@
       width: 80px;
       text-align: center;
       transition: all 0.2s ease;
+      /* Remove arrows from number inputs */
+      -moz-appearance: textfield;
+    }
+
+    .input-field::-webkit-outer-spin-button,
+    .input-field::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     .input-field:focus {
@@ -712,7 +720,7 @@
               <td>
                 <div class="checkbox-container">
                   <label class="modern-checkbox">
-                    <input type="checkbox" onchange="calculator.toggleReturn(${index})" 
+                    <input type="checkbox" onchange="calculator.toggleReturn(${index}, this)" 
                            ${part.isReturned ? 'checked' : ''}>
                     <span class="checkbox-mark"></span>
                   </label>
@@ -740,21 +748,38 @@
             this.parts[index].returned = maxReturned;
             event.target.value = maxReturned;
           }
+          
+          // Update checkbox state based on returned quantity
+          const row = event.target.closest('tr');
+          const checkbox = row.querySelector('input[type="checkbox"]');
+          if (numValue === this.parts[index].qty) {
+            checkbox.checked = true;
+            this.parts[index].isReturned = true;
+          } else if (numValue === 0) {
+            checkbox.checked = false;
+            this.parts[index].isReturned = false;
+          } else {
+            checkbox.checked = false;
+            this.parts[index].isReturned = false;
+          }
         }
         
         this.calculateRefunds();
       }
 
-      toggleReturn(index) {
-        const checkbox = event.target;
-        const returnedInput = checkbox.closest('tr').querySelector('input[type="number"]:nth-of-type(3)');
+      toggleReturn(index, checkboxElement) {
+        const checkbox = checkboxElement;
+        const row = checkbox.closest('tr');
+        const returnedInput = row.querySelector('td:nth-child(5) input');
         
         if (checkbox.checked) {
+          // Set returned quantity to full quantity
           const qty = this.parts[index].qty;
           this.parts[index].returned = qty;
           this.parts[index].isReturned = true;
           returnedInput.value = qty;
         } else {
+          // Set returned quantity to 0
           this.parts[index].returned = 0;
           this.parts[index].isReturned = false;
           returnedInput.value = 0;
