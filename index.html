@@ -64,24 +64,12 @@
       font-size: 1.1rem;
     }
 
-    .main-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    @media (max-width: 900px) {
-      .main-content {
-        grid-template-columns: 1fr;
-      }
-    }
-
     .input-section {
       background: var(--surface);
       border-radius: 12px;
       padding: 1.5rem;
       border: 1px solid var(--border);
+      margin-bottom: 2rem;
     }
 
     .input-title {
@@ -164,62 +152,12 @@
       outline: none;
     }
 
-    .summary-section {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 1.5rem;
-      border: 1px solid var(--border);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 600px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .stat-item {
-      background: var(--surface-light);
-      border-radius: 8px;
-      padding: 1.25rem;
-      text-align: center;
-      border-left: 3px solid var(--primary);
-    }
-
-    .stat-label {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-    }
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .stat-value.primary {
-      color: var(--primary);
-    }
-
-    .stat-value.success {
-      color: var(--success);
-    }
-
     .parts-section {
       background: var(--surface);
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border);
+      margin-bottom: 2rem;
     }
 
     .parts-header {
@@ -402,6 +340,57 @@
       opacity: 0.8;
     }
 
+    .summary-section {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-item {
+      background: var(--surface-light);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      border-left: 3px solid var(--primary);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-value.primary {
+      color: var(--primary);
+    }
+
+    .stat-value.success {
+      color: var(--success);
+    }
+
     .notification {
       position: fixed;
       top: 1.5rem;
@@ -447,70 +436,37 @@
       <p>Calculate refunds for returned kit components</p>
     </div>
 
-    <div class="main-content">
-      <div class="input-section">
-        <h2 class="input-title">
-          <i class="fas fa-clipboard-list"></i>
-          Kit Components
-        </h2>
-        
-        <div class="form-group">
-          <label class="form-label" for="kitInput">
-            Paste your kit component list below:
-          </label>
-          <textarea 
-            id="kitInput" 
-            class="kit-textarea" 
-            placeholder="Example:&#10;2x Front Brake Rotors - ABC123&#10;1x Brake Pad Set (Pair) - DEF456&#10;4x Wheel Bolts - GHI789&#10;&#10;Supports Detroit Axle, Amazon, and eBay formats"
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="kitPrice">
-            Total Kit Price ($)
-          </label>
-          <div class="price-input-wrapper">
-            <i class="fas fa-dollar-sign price-icon"></i>
-            <input 
-              type="number" 
-              id="kitPrice" 
-              class="price-input" 
-              placeholder="Enter total kit price"
-              step="0.01"
-              min="0"
-            >
-          </div>
-        </div>
+    <div class="input-section">
+      <h2 class="input-title">
+        <i class="fas fa-clipboard-list"></i>
+        Kit Components
+      </h2>
+      
+      <div class="form-group">
+        <label class="form-label" for="kitInput">
+          Paste your kit component list below:
+        </label>
+        <textarea 
+          id="kitInput" 
+          class="kit-textarea" 
+          placeholder="Example:&#10;2x Front Brake Rotors - ABC123&#10;1x Brake Pad Set (Pair) - DEF456&#10;4x Wheel Bolts - GHI789&#10;&#10;Supports Detroit Axle, Amazon, and eBay formats"
+        ></textarea>
       </div>
 
-      <div class="summary-section">
-        <h2 class="input-title">
-          <i class="fas fa-chart-pie"></i>
-          Summary
-        </h2>
-        
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-label">Total Parts</div>
-            <div class="stat-value" id="totalParts">0</div>
-          </div>
-          
-          <div class="stat-item">
-            <div class="stat-label">Kit Value</div>
-            <div class="stat-value primary" id="kitValue">$0.00</div>
-          </div>
-          
-          <div class="stat-item">
-            <div class="stat-label">Total Refund</div>
-            <div class="stat-value success" id="totalRefund">$0.00</div>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <p style="color: var(--text-secondary); font-size: 0.9rem;">
-            <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 0.5rem;"></i>
-            Brake pads, rotors, shoes, and drums are automatically adjusted to count as 1 unit per set
-          </p>
+      <div class="form-group">
+        <label class="form-label" for="kitPrice">
+          Total Kit Price ($)
+        </label>
+        <div class="price-input-wrapper">
+          <i class="fas fa-dollar-sign price-icon"></i>
+          <input 
+            type="number" 
+            id="kitPrice" 
+            class="price-input" 
+            placeholder="Enter total kit price"
+            step="0.01"
+            min="0"
+          >
         </div>
       </div>
     </div>
@@ -520,6 +476,37 @@
         <i class="fas fa-box-open"></i>
         <h3>Ready for Input</h3>
         <p>Paste your kit component list above to begin calculating refunds</p>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <h2 class="input-title">
+        <i class="fas fa-chart-pie"></i>
+        Summary
+      </h2>
+      
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">Total Parts</div>
+          <div class="stat-value" id="totalParts">0</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-label">Kit Value</div>
+          <div class="stat-value primary" id="kitValue">$0.00</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-label">Total Refund</div>
+          <div class="stat-value success" id="totalRefund">$0.00</div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 0.5rem;"></i>
+          Brake pads, rotors, shoes, and drums are automatically adjusted to count as 1 unit per set
+        </p>
       </div>
     </div>
   </div>
