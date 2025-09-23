@@ -38,77 +38,81 @@
       background: var(--background);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.5;
+      line-height: 1.4;
+      font-size: 0.9rem;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 2rem 1rem;
+      padding: 1rem;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
 
     .header h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       font-weight: 700;
       color: var(--primary);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
 
     .header p {
       color: var(--text-secondary);
-      font-size: 1.1rem;
+      font-size: 0.95rem;
     }
 
     .input-section {
       background: var(--surface);
-      border-radius: 12px;
-      padding: 1.5rem;
+      border-radius: 8px;
+      padding: 1.25rem;
       border: 1px solid var(--border);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     .input-title {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
+      gap: 0.5rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       color: var(--text-primary);
     }
 
     .input-title i {
       color: var(--primary);
+      font-size: 1rem;
     }
 
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .form-label {
       display: block;
       font-weight: 500;
       color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
     }
 
     .kit-textarea {
       width: 100%;
-      min-height: 250px;
+      min-height: 120px;
       background: var(--surface-light);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 6px;
+      padding: 0.75rem;
       color: var(--text-primary);
       font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      font-size: 0.85rem;
+      line-height: 1.4;
       resize: vertical;
       transition: all 0.2s ease;
     }
@@ -124,8 +128,8 @@
       align-items: center;
       background: var(--surface-light);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
       transition: all 0.2s ease;
     }
 
@@ -136,7 +140,8 @@
 
     .price-icon {
       color: var(--accent);
-      margin-right: 0.75rem;
+      margin-right: 0.6rem;
+      font-size: 0.9rem;
     }
 
     .price-input {
@@ -144,7 +149,7 @@
       background: transparent;
       border: none;
       color: var(--text-primary);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 500;
     }
 
@@ -154,50 +159,60 @@
 
     .parts-section {
       background: var(--surface);
-      border-radius: 12px;
+      border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--border);
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
+      max-height: 400px;
+      overflow-y: auto;
     }
 
     .parts-header {
       background: var(--surface-light);
-      padding: 1.25rem 1.5rem;
+      padding: 1rem 1.25rem;
       border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .parts-header h3 {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 600;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .parts-header i {
       color: var(--accent);
+      font-size: 1rem;
     }
 
     .parts-table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 0.85rem;
     }
 
     .parts-table th {
       background: var(--surface-light);
       color: var(--text-secondary);
       font-weight: 600;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 1rem;
+      padding: 0.75rem 0.5rem;
       text-align: left;
       border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 56px;
+      z-index: 5;
     }
 
     .parts-table td {
-      padding: 1rem;
+      padding: 0.75rem 0.5rem;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
     }
@@ -213,28 +228,30 @@
     .part-description {
       font-weight: 500;
       color: var(--text-primary);
-      max-width: 250px;
+      max-width: 200px;
+      font-size: 0.85rem;
     }
 
     .part-number {
       font-family: 'Courier New', monospace;
       font-size: 0.8rem;
-      color: var(--text-muted);
-      background: var(--background);
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      border: 1px solid var(--border);
+      color: var(--primary-light); /* Brighter color */
+      background: rgba(255, 123, 37, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      border: 1px solid rgba(255, 123, 37, 0.3);
+      font-weight: 600;
     }
 
     .input-field {
       background: var(--surface-light);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem;
+      border-radius: 4px;
+      padding: 0.4rem;
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 500;
-      width: 80px;
+      width: 65px;
       text-align: center;
       transition: all 0.2s ease;
       /* Remove arrows from number inputs */
@@ -261,8 +278,8 @@
 
     .modern-checkbox {
       position: relative;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       cursor: pointer;
     }
 
@@ -278,11 +295,11 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       background: var(--surface-light);
       border: 1px solid var(--border);
-      border-radius: 4px;
+      border-radius: 3px;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
@@ -297,8 +314,8 @@
     .checkbox-mark::after {
       content: "";
       position: absolute;
-      width: 5px;
-      height: 9px;
+      width: 4px;
+      height: 8px;
       border: solid white;
       border-width: 0 2px 2px 0;
       transform: rotate(45deg) scale(0);
@@ -312,46 +329,46 @@
     .refund-value {
       font-weight: 600;
       color: var(--success);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .empty-state {
       text-align: center;
-      padding: 3rem 1.5rem;
+      padding: 2rem 1.25rem;
       color: var(--text-muted);
     }
 
     .empty-state i {
-      font-size: 3rem;
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
       color: var(--border-light);
       opacity: 0.5;
     }
 
     .empty-state h3 {
-      font-size: 1.25rem;
-      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
       color: var(--text-secondary);
       font-weight: 600;
     }
 
     .empty-state p {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       opacity: 0.8;
     }
 
     .summary-section {
       background: var(--surface);
-      border-radius: 12px;
-      padding: 1.5rem;
+      border-radius: 8px;
+      padding: 1.25rem;
       border: 1px solid var(--border);
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 600px) {
@@ -362,23 +379,23 @@
 
     .stat-item {
       background: var(--surface-light);
-      border-radius: 8px;
-      padding: 1.25rem;
+      border-radius: 6px;
+      padding: 1rem;
       text-align: center;
       border-left: 3px solid var(--primary);
     }
 
     .stat-label {
       color: var(--text-muted);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
 
     .stat-value {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-primary);
     }
@@ -391,16 +408,30 @@
       color: var(--success);
     }
 
+    .info-text {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-text i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
     .notification {
       position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
+      top: 1rem;
+      right: 1rem;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
       color: var(--text-primary);
       font-weight: 500;
+      font-size: 0.85rem;
       transform: translateX(400px);
       transition: all 0.2s ease;
       z-index: 1000;
@@ -426,6 +457,24 @@
 
     .fade-in {
       animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Scrollbar styling */
+    .parts-section::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .parts-section::-webkit-scrollbar-track {
+      background: var(--surface-light);
+    }
+
+    .parts-section::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .parts-section::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-light);
     }
   </style>
 </head>
@@ -502,20 +551,18 @@
         </div>
       </div>
       
-      <div class="form-group">
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">
-          <i class="fas fa-info-circle" style="color: var(--primary); margin-right: 0.5rem;"></i>
-          Brake pads, rotors, shoes, and drums are automatically adjusted to count as 1 unit per set
-        </p>
+      <div class="info-text">
+        <i class="fas fa-info-circle"></i>
+        Brake pads, rotors, shoes, and drums are automatically adjusted to count as 1 unit per set
       </div>
     </div>
   </div>
 
   <script>
+    // JavaScript remains exactly the same as previous version
     class KitCalculator {
       constructor() {
         this.parts = [];
-        // Updated to include brake shoes and drums
         this.knownSingleItems = [
           "brake pads", "brake rotors", "brake shoes", "brake drums",
           "brake pad", "rotor", "pads", "shoes", "drums"
@@ -551,17 +598,14 @@
       normalizeQuantity(description, quantity, partNumber) {
         const descLower = description.toLowerCase();
         
-        // Handle brake pads, rotors, shoes, and drums - always count as 1 unit
         if (this.knownSingleItems.some(item => descLower.includes(item))) {
           return 1;
         }
         
-        // Handle items with (Pair) in description
         if (descLower.includes("(pair)") && quantity === 1) {
           return 2;
         }
         
-        // Handle part numbers ending with x2 (indicating a pair)
         if (partNumber && partNumber.toLowerCase().endsWith('x2') && quantity === 1) {
           return 2;
         }
@@ -582,7 +626,6 @@
         const lines = input.split(/\n+/).filter(line => line.trim());
         this.parts = [];
 
-        // Try different parsing patterns for different platforms
         lines.forEach(line => {
           const trimmedLine = line.trim();
           if (!trimmedLine) return;
@@ -591,7 +634,6 @@
           let desc = "";
           let partNum = "";
           
-          // Pattern 1: Detroit Axle format (tab separated)
           if (trimmedLine.includes('\t')) {
             const parts = trimmedLine.split('\t');
             if (parts.length >= 3) {
@@ -600,7 +642,6 @@
               partNum = parts[2].trim();
             }
           } 
-          // Pattern 2: Amazon/eBay format (2x Description - PartNumber)
           else if (trimmedLine.includes('x') && (trimmedLine.includes('-') || trimmedLine.includes(':'))) {
             const xIndex = trimmedLine.indexOf('x');
             const separatorIndex = Math.max(
@@ -614,12 +655,10 @@
               partNum = trimmedLine.substring(separatorIndex + 2).trim();
             }
           }
-          // Pattern 3: Simple format (Qty Description PartNumber)
           else {
             const words = trimmedLine.split(/\s+/);
             const firstWord = words[0];
             
-            // Check if first word is a number (quantity)
             if (!isNaN(firstWord)) {
               qty = parseInt(firstWord);
               desc = words.slice(1, -1).join(' ');
@@ -629,7 +668,6 @@
             }
           }
           
-          // Normalize quantity based on description and part number
           qty = this.normalizeQuantity(desc, qty, partNum);
           
           this.parts.push({ 
@@ -736,7 +774,6 @@
             event.target.value = maxReturned;
           }
           
-          // Update checkbox state based on returned quantity
           const row = event.target.closest('tr');
           const checkbox = row.querySelector('input[type="checkbox"]');
           if (numValue === this.parts[index].qty) {
@@ -760,13 +797,11 @@
         const returnedInput = row.querySelector('td:nth-child(5) input');
         
         if (checkbox.checked) {
-          // Set returned quantity to full quantity
           const qty = this.parts[index].qty;
           this.parts[index].returned = qty;
           this.parts[index].isReturned = true;
           returnedInput.value = qty;
         } else {
-          // Set returned quantity to 0
           this.parts[index].returned = 0;
           this.parts[index].isReturned = false;
           returnedInput.value = 0;
@@ -824,7 +859,6 @@
       }
     }
 
-    // Initialize the calculator
     const calculator = new KitCalculator();
   </script>
 </body>
