@@ -1,0 +1,20 @@
+{
+  "name": "detroit-axle-kit-calculator",
+  "version": "1.0.0",
+  "description": "Detroit Axle Kit Calculator and Analyzer Tools",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "calculator",
+    "automotive",
+    "detroit-axle",
+    "refunds"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}
