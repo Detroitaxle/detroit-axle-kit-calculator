@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detroit Axle Kit Analyzer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #60a5fa;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --background: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --surface-hover: #475569;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --glass-bg: rgba(30, 41, 59, 0.8);
+      --glass-border: rgba(148, 163, 184, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: slideInDown 0.8s ease-out;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1200px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    .summary-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 2rem;
+      height: fit-content;
+      animation: slideInRight 0.8s ease-out;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--text-primary);
+    }
+
+    .section-title i {
+      color: var(--primary);
+      font-size: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .total-input-wrapper {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .total-input {
+      width: 100%;
+      background: var(--surface-light);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1rem 1rem 3rem;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .total-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .dollar-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--success);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .kit-textarea {
+      width: 100%;
+      min-height: 400px;
+      background: var(--surface-light);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: all 0.3s ease;
+    }
+
+    .kit-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .analyze-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .analyze-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .analyze-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .summary-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--surface-light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .stat-value.primary {
+      color: var(--primary);
+    }
+
+    .stat-value.success {
+      color: var(--success);
+    }
+
+    .stat-value.warning {
+      color: var(--warning);
+    }
+
+    .tax-breakdown {
+      background: var(--surface-light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .tax-breakdown h4 {
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tax-breakdown h4 i {
+      color: var(--warning);
+    }
+
+    .tax-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tax-row:last-child {
+      border-bottom: none;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .results-section {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: slideInUp 0.8s ease-out;
+    }
+
+    .results-header {
+      background: var(--surface-light);
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-header h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .results-header i {
+      color: var(--accent);
+    }
+
+    .kit-grid {
+      display: grid;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .kit-card {
+      background: var(--surface-light);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      animation: fadeInScale 0.6s ease-out;
+    }
+
+    .kit-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: var(--primary);
+    }
+
+    .kit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .kit-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      flex: 1;
+      margin-right: 1rem;
+    }
+
+    .kit-sku {
+      background: var(--primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .kit-pricing {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .price-item {
+      text-align: center;
+      padding: 1rem;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .price-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .price-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .price-value.unit {
+      color: var(--accent);
+    }
+
+    .price-value.total {
+      color: var(--success);
+    }
+
+    .price-value.tax {
+      color: var(--warning);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      color: var(--border-light);
+      opacity: 0.5;
+      animation: pulse 2s infinite;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+      font-weight: 700;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+      opacity: 0.8;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .notification {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      color: var(--text-primary);
+      font-weight: 600;
+      transform: translateX(400px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .notification.error {
+      border-left: 4px solid var(--error);
+    }
+
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .summary-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .kit-pricing {
+        grid-template-columns: 1fr;
+      }
+
+      .kit-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .kit-sku {
+        align-self: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-pattern"></div>
+  
+  <div class="container">
+    <div class="header">
+      <h1>Detroit Axle Kit Analyzer</h1>
+      <p>Extract tax information and analyze kit pricing with precision</p>
+    </div>
+
+    <div class="main-grid">
+      <div class="input-section">
+        <h2 class="section-title">
+          <i class="fas fa-calculator"></i>
+          Input Data
+        </h2>
+        
+        <div class="form-group">
+          <label class="form-label" for="totalPaid">
+            Total Amount Paid
+          </label>
+          <div class="total-input-wrapper">
+            <i class="fas fa-dollar-sign dollar-icon"></i>
+            <input 
+              type="number" 
+              id="totalPaid" 
+              class="total-input" 
+              placeholder="0.00"
+              step="0.01"
+              min="0"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="kitData">
+            Kit Information
+          </label>
+          <textarea 
+            id="kitData" 
+            class="kit-textarea" 
+            placeholder="Paste your kit information here...
+
+Example format:
+REAR Coil Spring Strut Assembly for 2007-2014 Dodge Avenger Chrysler 200 Sebring
+SKU: 171126 x2
+REAR Coil Spring Strut Assembly for 2007-2014 Dodge Avenger Chrysler 200 Sebring
+$133.34
+1
+$133.34
+
+Rear Left Right Brake Calipers w/Bracket for Avenger Caliber 200 Patriot Compass
+SKU: 18B5104_18B5105
+Rear Left Right Brake Calipers w/Bracket for Avenger Caliber 200 Patriot Compass
+$94.10
+1
+$94.10"
+          ></textarea>
+        </div>
+
+        <button class="analyze-btn" onclick="analyzer.processData()">
+          <i class="fas fa-chart-line"></i>
+          Analyze Kits
+        </button>
+      </div>
+
+      <div class="summary-panel">
+        <h2 class="section-title">
+          <i class="fas fa-chart-pie"></i>
+          Summary
+        </h2>
+        
+        <div class="summary-stats">
+          <div class="stat-card">
+            <div class="stat-label">Total Kits</div>
+            <div class="stat-value" id="totalKits">0</div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-label">Subtotal</div>
+            <div class="stat-value success" id="subtotalAmount">$0.00</div>
+          </div>
+        </div>
+
+        <div class="tax-breakdown">
+          <h4>
+            <i class="fas fa-receipt"></i>
+            Tax Breakdown
+          </h4>
+          <div class="tax-row">
+            <span>Subtotal:</span>
+            <span id="taxSubtotal">$0.00</span>
+          </div>
+          <div class="tax-row">
+            <span>Tax Amount:</span>
+            <span id="taxAmount">$0.00</span>
+          </div>
+          <div class="tax-row">
+            <span>Tax Rate:</span>
+            <span id="taxRate">0.00%</span>
+          </div>
+          <div class="tax-row">
+            <span>Total Paid:</span>
+            <span id="totalPaidSummary">$0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-section" id="resultsContainer">
+      <div class="empty-state">
+        <i class="fas fa-search-dollar"></i>
+        <h3>Ready to Analyze</h3>
+        <p>Enter the total amount paid and paste your kit information above to begin the analysis</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class KitAnalyzer {
+      constructor() {
+        this.kits = [];
+        this.totalPaid = 0;
+        this.subtotal = 0;
+        this.taxAmount = 0;
+        this.taxRate = 0;
+        this.init();
+      }
+
+      init() {
+        this.bindEvents();
+      }
+
+      bindEvents() {
+        const totalInput = document.getElementById("totalPaid");
+        const kitInput = document.getElementById("kitData");
+
+        totalInput.addEventListener("input", this.debounce(() => this.updateCalculations(), 300));
+        kitInput.addEventListener("input", this.debounce(() => this.processData(), 500));
+      }
+
+      debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      processData() {
+        const totalPaidInput = document.getElementById("totalPaid").value;
+        const kitDataInput = document.getElementById("kitData").value.trim();
+
+        this.totalPaid = parseFloat(totalPaidInput) || 0;
+
+        if (!kitDataInput) {
+          this.kits = [];
+          this.renderEmptyState();
+          this.updateSummary();
+          return;
+        }
+
+        this.parseKitData(kitDataInput);
+        this.calculateTax();
+        this.renderResults();
+        this.updateSummary();
+
+        if (this.kits.length > 0) {
+          this.showNotification(`Successfully analyzed ${this.kits.length} kit${this.kits.length > 1 ? 's' : ''}!`, "success");
+        }
+      }
+
+      parseKitData(data) {
+        this.kits = [];
+        const lines = data.split('\n').filter(line => line.trim());
+        
+        let i = 0;
+        while (i < lines.length) {
+          const kitName = lines[i]?.trim();
+          if (!kitName) {
+            i++;
+            continue;
+          }
+
+          // Look for SKU line
+          const skuLine = lines[i + 1]?.trim();
+          if (!skuLine || !skuLine.toLowerCase().includes('sku:')) {
+            i++;
+            continue;
+          }
+
+          const sku = skuLine.replace(/^SKU:\s*/i, '').trim();
+          
+          // Skip the repeated kit name line
+          i += 3;
+          
+          // Get unit price
+          const unitPriceLine = lines[i]?.trim();
+          if (!unitPriceLine || !unitPriceLine.startsWith('$')) {
+            i++;
+            continue;
+          }
+          
+          const unitPrice = parseFloat(unitPriceLine.replace('$', '')) || 0;
+          
+          // Get quantity
+          const quantityLine = lines[i + 1]?.trim();
+          const quantity = parseInt(quantityLine) || 1;
+          
+          // Get total price
+          const totalPriceLine = lines[i + 2]?.trim();
+          const totalPrice = totalPriceLine && totalPriceLine.startsWith('$') 
+            ? parseFloat(totalPriceLine.replace('$', '')) || (unitPrice * quantity)
+            : (unitPrice * quantity);
+
+          this.kits.push({
+            name: kitName,
+            sku: sku,
+            unitPrice: unitPrice,
+            quantity: quantity,
+            totalPrice: totalPrice
+          });
+
+          i += 3;
+        }
+      }
+
+      calculateTax() {
+        this.subtotal = this.kits.reduce((sum, kit) => sum + kit.totalPrice, 0);
+        this.taxAmount = Math.max(0, this.totalPaid - this.subtotal);
+        this.taxRate = this.subtotal > 0 ? (this.taxAmount / this.subtotal) * 100 : 0;
+      }
+
+      updateCalculations() {
+        if (this.kits.length > 0) {
+          this.calculateTax();
+          this.updateSummary();
+          this.renderResults();
+        }
+      }
+
+      renderEmptyState() {
+        document.getElementById("resultsContainer").innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-search-dollar"></i>
+            <h3>Ready to Analyze</h3>
+            <p>Enter the total amount paid and paste your kit information above to begin the analysis</p>
+          </div>
+        `;
+      }
+
+      renderResults() {
+        if (this.kits.length === 0) {
+          this.renderEmptyState();
+          return;
+        }
+
+        let resultsHTML = `
+          <div class="results-header">
+            <h3>
+              <i class="fas fa-boxes"></i>
+              Kit Analysis Results
+            </h3>
+          </div>
+          <div class="kit-grid">
+        `;
+
+        this.kits.forEach((kit, index) => {
+          const unitPriceWithTax = kit.unitPrice * (1 + this.taxRate / 100);
+          const totalPriceWithTax = kit.totalPrice * (1 + this.taxRate / 100);
+          const taxOnKit = totalPriceWithTax - kit.totalPrice;
+
+          resultsHTML += `
+            <div class="kit-card" style="animation-delay: ${index * 0.1}s">
+              <div class="kit-header">
+                <div class="kit-name">${kit.name}</div>
+                <div class="kit-sku">${kit.sku}</div>
+              </div>
+              
+              <div class="kit-pricing">
+                <div class="price-item">
+                  <div class="price-label">Unit Price</div>
+                  <div class="price-value unit">$${kit.unitPrice.toFixed(2)}</div>
+                </div>
+                
+                <div class="price-item">
+                  <div class="price-label">Quantity</div>
+                  <div class="price-value">${kit.quantity}</div>
+                </div>
+                
+                <div class="price-item">
+                  <div class="price-label">Subtotal</div>
+                  <div class="price-value total">$${kit.totalPrice.toFixed(2)}</div>
+                </div>
+                
+                <div class="price-item">
+                  <div class="price-label">Unit + Tax</div>
+                  <div class="price-value unit">$${unitPriceWithTax.toFixed(2)}</div>
+                </div>
+                
+                <div class="price-item">
+                  <div class="price-label">Tax Amount</div>
+                  <div class="price-value tax">$${taxOnKit.toFixed(2)}</div>
+                </div>
+                
+                <div class="price-item">
+                  <div class="price-label">Total + Tax</div>
+                  <div class="price-value total">$${totalPriceWithTax.toFixed(2)}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        resultsHTML += `</div>`;
+        
+        document.getElementById("resultsContainer").innerHTML = resultsHTML;
+      }
+
+      updateSummary() {
+        document.getElementById("totalKits").textContent = this.kits.length;
+        document.getElementById("subtotalAmount").textContent = `$${this.subtotal.toFixed(2)}`;
+        document.getElementById("taxSubtotal").textContent = `$${this.subtotal.toFixed(2)}`;
+        document.getElementById("taxAmount").textContent = `$${this.taxAmount.toFixed(2)}`;
+        document.getElementById("taxRate").textContent = `${this.taxRate.toFixed(2)}%`;
+        document.getElementById("totalPaidSummary").textContent = `$${this.totalPaid.toFixed(2)}`;
+      }
+
+      showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => document.body.removeChild(notification), 300);
+        }, 4000);
+      }
+    }
+
+    // Initialize the analyzer
+    const analyzer = new KitAnalyzer();
+  </script>
+</body>
+</html>
